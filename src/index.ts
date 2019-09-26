@@ -1,3 +1,4 @@
+import inquirer from "inquirer"
 import yargs from "yargs"
 import { RenoteDb } from "./db"
 import { ExhaustiveSwitchError } from "./ExhaustiveSwitchError"
@@ -30,7 +31,21 @@ async function main() {
   }
 
   async function addNote() {
-    await db.createPost("title", "body")
+    const answers = await inquirer.prompt([
+      {
+        type: "input",
+        name: "title",
+        message: "Title",
+      },
+      {
+        type: "editor",
+        name: "body",
+        message: "Body",
+      },
+    ])
+
+    // @ts-ignore - TODO: why does TS fail here?
+    await db.createPost(answers.title, answers.body)
   }
 
   async function dumpDb() {
