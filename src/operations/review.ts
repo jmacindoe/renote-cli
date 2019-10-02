@@ -8,7 +8,7 @@ export async function doReview(db: RenoteDb) {
   if (posts.length === 0) {
     console.log("Nothing due today")
   } else {
-    reviewPosts(db, posts)
+    await reviewPosts(db, posts)
   }
 }
 

@@ -1,6 +1,8 @@
 import mongoose, { Document } from "mongoose"
 import { LocalDate } from "./model/LocalDate"
 
+mongoose.Promise = global.Promise
+
 export interface Post {
   _id: any
   title: string
