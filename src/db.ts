@@ -1,3 +1,4 @@
+import moment from "moment"
 import mongoose, { Document } from "mongoose"
 import { LocalDate } from "./model/LocalDate"
 
@@ -48,7 +49,7 @@ export class RenoteDb {
     await Post.create({
       title,
       body,
-      createdAt: new Date().toISOString(),
+      createdAt: moment().format(),
       nextDue: nextDue.daysSince1Jan2000(),
     })
   }
