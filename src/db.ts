@@ -56,7 +56,7 @@ export class RenoteDb {
 
   async getTodaysPosts(): Promise<Post[]> {
     return await Post.find({
-      nextDue: new LocalDate().daysSince1Jan2000(),
+      nextDue: { $lte: new LocalDate().daysSince1Jan2000() },
     }).exec()
   }
 
