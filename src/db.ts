@@ -1,19 +1,20 @@
-import { endOfToday, startOfToday } from "date-fns"
 import mongoose, { Document } from "mongoose"
+import { LocalDate } from "./model/LocalDate"
 
 export interface Post {
   _id: any
   title: string
   body: string
   createdAt: Date
-  nextDue: Date
+  nextDue: LocalDate
 }
 
 const postSchema = new mongoose.Schema({
   title: String,
   body: String,
-  createdAt: Date,
-  nextDue: Date,
+  // TODO: store correct timezone in string
+  createdAt: String,
+  nextDue: Number,
 })
 
 const Post = mongoose.model<Post & Document>("Post", postSchema)
@@ -37,23 +38,30 @@ export class RenoteDb {
     mongoose.disconnect()
   }
 
-  async createPost(title: string, body: string, nextDue: Date): Promise<void> {
+  async createPost(
+    title: string,
+    body: string,
+    nextDue: LocalDate,
+  ): Promise<void> {
     await Post.create({
       title,
       body,
-      createdAt: new Date(),
-      nextDue,
+      createdAt: new Date().toISOString(),
+      nextDue: nextDue.daysSince1Jan2000(),
     })
   }
 
   async getTodaysPosts(): Promise<Post[]> {
     return await Post.find({
-      nextDue: { $gt: startOfToday(), $lt: endOfToday() },
+      nextDue: new LocalDate().daysSince1Jan2000(),
     }).exec()
   }
 
-  async updateDueDate(_id: any, newDueDate: Date) {
-    await Post.updateOne({ _id }, { $set: { nextDue: newDueDate } }).exec()
+  async updateDueDate(_id: any, newDueDate: LocalDate) {
+    await Post.updateOne(
+      { _id },
+      { $set: { nextDue: newDueDate.daysSince1Jan2000() } },
+    ).exec()
   }
 
   async dumpDb(): Promise<Post[]> {

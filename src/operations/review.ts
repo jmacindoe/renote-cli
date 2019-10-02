@@ -1,6 +1,7 @@
 import inquirer from "inquirer"
 import { Post, RenoteDb } from "../db"
 import { nextDueFromString, showInHowManyDays } from "../prompts/whenDue"
+import { LocalDate } from "../model/LocalDate"
 
 export async function doReview(db: RenoteDb) {
   const posts = await db.getTodaysPosts()
@@ -18,7 +19,7 @@ async function reviewPosts(db: RenoteDb, posts: Post[]) {
   }
 }
 
-async function reviewPost(post: Post): Promise<Date> {
+async function reviewPost(post: Post): Promise<LocalDate> {
   console.log("# " + post.title + "\n")
   console.log(post.body)
 

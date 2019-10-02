@@ -1,5 +1,4 @@
-import { addDays } from "date-fns"
-import { LocalDate } from "local-date"
+import { LocalDate } from "../model/LocalDate"
 
 export const showInHowManyDays = {
   type: "input" as "input",
@@ -9,5 +8,5 @@ export const showInHowManyDays = {
 
 export function nextDueFromString(nextDueInNDays: string): LocalDate {
   const nextDueInt = parseInt(nextDueInNDays, 10)
-  return addDays(new Date(), nextDueInt)
+  return new LocalDate().addDays(nextDueInt)
 }
