@@ -1,26 +1,76 @@
+import { ObjectId } from "bson"
+import * as t from "io-ts"
 import moment from "moment"
 import mongoose, { Document } from "mongoose"
 import { LocalDate } from "./model/LocalDate"
 
 mongoose.Promise = global.Promise
 
-export interface Post {
+interface BasePost {
   _id: any
-  title: string
-  body: string
   createdAt: Date
   nextDue: LocalDate
 }
 
+export interface TextPost extends BasePost {
+  type: "text"
+  title: string
+  body: string
+}
+
+export interface DiaryPost extends BasePost {
+  type: "diary"
+  prompt: string
+}
+
+export type Post = TextPost | DiaryPost
+
+export interface DiaryEntry {
+  _id: any
+  createdAt: Date
+  body: string
+}
+
+const DiaryEntry = mongoose.model<DiaryEntry & Document>(
+  "DiaryEntry",
+  new mongoose.Schema({
+    postId: ObjectId,
+    createdAt: String,
+    body: String,
+  }),
+)
+
+const discriminatorOptions = { discriminatorKey: "type" }
+
 const postSchema = new mongoose.Schema({
-  title: String,
-  body: String,
-  // TODO: store correct timezone in string
   createdAt: String,
+  /// Days since Jan 1 2000
   nextDue: Number,
 })
 
-const Post = mongoose.model<Post & Document>("Post", postSchema)
+const BasePost = mongoose.model<BasePost & Document>("Post", postSchema)
+
+const TextPost = BasePost.discriminator<TextPost & Document>(
+  "TextPost",
+  new mongoose.Schema(
+    {
+      title: String,
+      body: String,
+    },
+    discriminatorOptions,
+  ),
+)
+
+const DiaryPost = BasePost.discriminator<DiaryPost & Document>(
+  "DiaryPost",
+  new mongoose.Schema(
+    {
+      title: String,
+      body: String,
+    },
+    discriminatorOptions,
+  ),
+)
 
 export class RenoteDb {
   static async create(): Promise<RenoteDb> {
@@ -46,7 +96,7 @@ export class RenoteDb {
     body: string,
     nextDue: LocalDate,
   ): Promise<void> {
-    await Post.create({
+    await TextPost.create({
       title,
       body,
       createdAt: moment().format(),
@@ -55,26 +105,16 @@ export class RenoteDb {
   }
 
   async getTodaysPosts(): Promise<Post[]> {
-    return await Post.find({
+    // @ts-ignore: TODO: convert these to JS objects in a type-safe way
+    return await BasePost.find({
       nextDue: { $lte: new LocalDate().daysSince1Jan2000() },
     }).exec()
   }
 
   async updateDueDate(_id: any, newDueDate: LocalDate) {
-    await Post.updateOne(
+    await BasePost.updateOne(
       { _id },
       { $set: { nextDue: newDueDate.daysSince1Jan2000() } },
     ).exec()
-  }
-
-  async dumpDb(): Promise<Post[]> {
-    const docs = await Post.find().exec()
-    return docs.map(doc => ({
-      _id: doc._id,
-      title: doc.title,
-      body: doc.body,
-      createdAt: doc.createdAt,
-      nextDue: doc.nextDue,
-    }))
   }
 }

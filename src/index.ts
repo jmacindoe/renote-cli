@@ -4,14 +4,14 @@ import { ExhaustiveSwitchError } from "./ExhaustiveSwitchError"
 import { addNote } from "./operations/add"
 import { doReview } from "./operations/review"
 
-export type RenoteCommand = "add" | "review" | "dump"
+export type RenoteCommand = "add" | "review"
 
 async function main() {
   const db = await RenoteDb.create()
 
   function readCliArguments(argv: string[]): RenoteCommand {
     const command = yargs.argv._[0]
-    if (command === "add" || command === "review" || command === "dump") {
+    if (command === "add" || command === "review") {
       return command
     } else {
       throw new Error("Unknown command line argument")
@@ -26,16 +26,9 @@ async function main() {
       case "review":
         await doReview(db)
         break
-      case "dump":
-        await dumpDb()
-        break
       default:
         throw new ExhaustiveSwitchError(command)
     }
-  }
-
-  async function dumpDb() {
-    console.log(await db.dumpDb())
   }
 
   const command = readCliArguments(process.argv)
