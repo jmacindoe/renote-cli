@@ -1,13 +1,14 @@
 import yargs from "yargs"
-import { RenoteDb } from "./db"
-import { ExhaustiveSwitchError } from "./ExhaustiveSwitchError"
-import { addNote } from "./operations/add"
-import { doReview } from "./operations/review"
+import { ExhaustiveSwitchError } from "./error/ExhaustiveSwitchError"
+import { addNote } from "./features/posts/add"
+import { doReview } from "./features/posts/review"
+import { init } from "./init"
+import { tearDown } from "./tearDown"
 
 export type RenoteCommand = "add" | "review"
 
 async function main() {
-  const db = await RenoteDb.create()
+  init()
 
   function readCliArguments(argv: string[]): RenoteCommand {
     const command = yargs.argv._[0]
@@ -21,10 +22,10 @@ async function main() {
   async function runCommand(command: RenoteCommand) {
     switch (command) {
       case "add":
-        await addNote(db)
+        await addNote()
         break
       case "review":
-        await doReview(db)
+        await doReview()
         break
       default:
         throw new ExhaustiveSwitchError(command)
@@ -33,7 +34,7 @@ async function main() {
 
   const command = readCliArguments(process.argv)
   await runCommand(command)
-  db.close()
+  tearDown()
 }
 
 main()

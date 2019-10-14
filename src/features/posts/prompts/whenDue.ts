@@ -1,4 +1,4 @@
-import { LocalDate } from "../model/LocalDate"
+import { LocalDate } from "../base/model/LocalDate"
 
 export const showInHowManyDays = {
   type: "input" as "input",

@@ -1,8 +1,8 @@
 import inquirer from "inquirer"
-import { RenoteDb } from "../db"
-import { nextDueFromString, showInHowManyDays } from "../prompts/whenDue"
+import { nextDueFromString, showInHowManyDays } from "../../prompts/whenDue"
+import { createTextPostUseCase } from "../usecase/createTextPostUseCase"
 
-export async function addNote(db: RenoteDb) {
+export async function createTextNoteCli(): Promise<void> {
   const answers = await inquirer.prompt([
     {
       type: "input",
@@ -20,5 +20,5 @@ export async function addNote(db: RenoteDb) {
   // @ts-ignore - TODO: why does TS fail here?
   const { title, body, nextDueInNDays } = answers
   const nextDue = nextDueFromString(nextDueInNDays)
-  await db.createPost(title, body, nextDue)
+  await createTextPostUseCase(title, body, nextDue)
 }
