@@ -1,4 +1,4 @@
-import { createTextNoteCli } from "./text/ui/createTextNote.cli"
+import { createTextNoteCli } from "./text/cli/createTextNote.cli"
 
 export async function addNote() {
   await createTextNoteCli()
