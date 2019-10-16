@@ -20,6 +20,7 @@
     "@types/mongoose": "^5.5.17",
     "@types/node": "^12.7.5",
     "jest": "^24.9.0",
+    "mongodb-memory-server": "^5.2.8",
     "prettier": "^1.18.2",
     "ts-jest": "^24.1.0",
     "tslint": "^5.20.0",

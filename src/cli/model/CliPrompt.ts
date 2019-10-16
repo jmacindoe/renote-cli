@@ -1,12 +1,12 @@
-import { QuestionCollection, Answers } from "inquirer"
+import { Answers, DistinctQuestion } from "inquirer"
 
 export interface CliPrompt {
   type: "prompt"
-  questions: QuestionCollection<any>
+  questions: ReadonlyArray<DistinctQuestion<any>>
 }
 
 export function* prompt<T extends Answers>(
-  questions: QuestionCollection<T>,
+  questions: ReadonlyArray<DistinctQuestion<T>>,
 ): Generator<CliPrompt, T> {
   // @ts-ignore: return type is provided by inquirer lib
   return yield {

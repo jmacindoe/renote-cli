@@ -1,9 +1,8 @@
 import yargs from "yargs"
+import { BackendDb } from "./db/BackendDb"
 import { ExhaustiveSwitchError } from "./error/ExhaustiveSwitchError"
 import { addNote } from "./features/posts/add"
 import { doReview } from "./features/posts/review"
-import { init } from "./init"
-import { tearDown } from "./tearDown"
 
 export type RenoteCommand = "add" | "review"
 
@@ -35,6 +34,14 @@ async function main() {
   const command = readCliArguments(process.argv)
   await runCommand(command)
   tearDown()
+}
+
+function init() {
+  BackendDb.init("mongodb://localhost:27017/renote")
+}
+
+function tearDown() {
+  BackendDb.tearDown()
 }
 
 main()
