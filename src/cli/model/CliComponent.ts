@@ -1,3 +1,7 @@
 import { CliOperation } from "./CliOperation"
 
-export type CliComponent = AsyncGenerator<CliOperation, any, any>
+export type CliComponent<TReturn = any> = AsyncGenerator<
+  CliOperation,
+  TReturn,
+  any
+>
