@@ -1,28 +1,28 @@
 import inquirer from "inquirer"
-import { CliComponent } from "./model/CliComponent"
-import { CliOperation } from "./model/CliOperation"
 import { ExhaustiveSwitchError } from "../error/ExhaustiveSwitchError"
+import { CliComponent } from "./model/CliComponent"
 
-export async function cliInterpreter(cli: () => CliComponent) {
-  const component = cli()
-  var next: any | undefined = undefined
-  var request: IteratorResult<CliOperation>
-  do {
-    request = await component.next(next)
-    if (request.value) {
-      next = await execute(request.value)
-    }
-  } while (!request.done)
+export async function cliInterpreter(component: CliComponent) {
+  await interpreter(component)
 }
 
-async function execute(request: CliOperation): Promise<any | undefined> {
-  switch (request.type) {
+async function interpreter(sut: CliComponent, next?: any) {
+  const request = await sut.next(next)
+  if (request.done) {
+    return
+  }
+
+  const operation = request.value
+  switch (operation.type) {
     case "print":
-      console.log(request.text)
-      return undefined
+      console.log(operation.text)
+      await interpreter(sut)
+      break
     case "prompt":
-      return await inquirer.prompt(request.questions)
+      const next = await inquirer.prompt(operation.questions)
+      await interpreter(sut, next)
+      break
     default:
-      throw new ExhaustiveSwitchError(request)
+      throw new ExhaustiveSwitchError(operation)
   }
 }

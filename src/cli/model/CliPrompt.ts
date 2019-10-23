@@ -10,7 +10,7 @@ export function* prompt<T extends Answers>(
 ): Generator<CliPrompt, T> {
   // @ts-ignore: return type is provided by inquirer lib
   return yield {
-    type: "prompt",
+    type: "prompt" as "prompt",
     questions,
   }
 }
