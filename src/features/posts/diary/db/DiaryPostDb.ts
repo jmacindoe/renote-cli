@@ -5,10 +5,9 @@ import {
   deserializeBasePost,
 } from "../../base/db/BasePostDb"
 import { DiaryPost } from "../model/DiaryPost"
-import { diaryPostPlugin } from "../diaryPostPlugin"
 import { assert } from "../../../../error/assert"
 
-export const diaryNoteId = "DiaryPost"
+export const diaryNoteId = "DiaryNote"
 
 export interface DbDiaryPost extends DbBasePost {
   prompt: string

@@ -7,7 +7,7 @@ import {
 import { TextPost } from "../model/TextPost"
 import { assert } from "../../../../error/assert"
 
-export const textNoteId = "TextPost"
+export const textNoteId = "TextNote"
 
 export interface DbTextPost extends DbBasePost {
   title: string
