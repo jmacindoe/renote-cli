@@ -25,8 +25,7 @@ async function main() {
       case "add":
         return addNote()
       case "review":
-        //await doReview()
-        throw new Error("TODO")
+        return doReview()
       default:
         throw new ExhaustiveSwitchError(command)
     }
