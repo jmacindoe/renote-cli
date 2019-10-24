@@ -9,22 +9,22 @@ import { DocumentWithDiscriminator } from "../../db/DocumentWithDiscriminator"
 class NotePlugins {
   plugins: PostTypePlugin[] = [textPostPlugin, diaryPostPlugin]
 
-  getNames(): string[] {
-    return this.plugins.map(p => p.name)
+  getUiNames(): string[] {
+    return this.plugins.map(p => p.uiName)
   }
 
-  getById(id: string): PostTypePlugin {
-    return assertDefined(this.plugins.find(p => p.id === id))
+  getByType(type: string): PostTypePlugin {
+    return assertDefined(this.plugins.find(p => p.type === type))
   }
 
-  getByName(name: string): PostTypePlugin {
-    return assertDefined(this.plugins.find(p => p.name === name))
+  getByUiName(uiName: string): PostTypePlugin {
+    return assertDefined(this.plugins.find(p => p.uiName === uiName))
   }
 
   deserialize(doc: DocumentWithDiscriminator): Post {
     doc.validateSync()
     const id = doc.__t
-    const plugin = this.getById(id)
+    const plugin = this.getByType(id)
     return plugin.deserialize(doc)
   }
 

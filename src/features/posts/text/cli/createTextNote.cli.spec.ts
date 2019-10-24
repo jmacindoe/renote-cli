@@ -29,7 +29,7 @@ describe("createTextNote.cli", () => {
     const docs = await BasePostDb.find().exec()
     expect(docs.length).toEqual(1)
     const doc = docs[0] as any
-    expect(doc.__t).toEqual("TextPost")
+    expect(doc.__t).toEqual("TextNote")
     expect(doc.title).toEqual("the title")
     expect(doc.body).toEqual("The body")
     // TODO: test nextDue (and createdAt)

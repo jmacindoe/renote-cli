@@ -43,7 +43,7 @@ describe("getDuePostsUseCase", () => {
           "daysSince2000": 1000,
         },
         "title": "title",
-        "type": "text",
+        "type": "TextNote",
       }
     `,
     )
@@ -57,7 +57,7 @@ describe("getDuePostsUseCase", () => {
           "daysSince2000": 999,
         },
         "prompt": "prompt",
-        "type": "diary",
+        "type": "DiaryNote",
       }
     `,
     )

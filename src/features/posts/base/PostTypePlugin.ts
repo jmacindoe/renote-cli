@@ -3,8 +3,8 @@ import { Post } from "./model/Post"
 import { Document } from "mongoose"
 
 export interface PostTypePlugin {
-  id: string
-  name: string
+  type: string
+  uiName: string
   createNote(): CliComponent
   reviewNote(post: Post): CliComponent
   deserialize(doc: Document): Post

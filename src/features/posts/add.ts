@@ -4,7 +4,7 @@ import { noteTypePlugins } from "./postTypePlugins"
 
 export async function* addNote(): CliComponent {
   const noteType = yield* promptForNoteType()
-  const plugin = noteTypePlugins.getByName(noteType)
+  const plugin = noteTypePlugins.getByUiName(noteType)
   yield* plugin.createNote()
 }
 
@@ -13,7 +13,7 @@ async function* promptForNoteType(): CliComponent<string> {
     {
       type: "list",
       name: "noteType",
-      choices: noteTypePlugins.getNames(),
+      choices: noteTypePlugins.getUiNames(),
     },
   ])
   return choice.noteType
