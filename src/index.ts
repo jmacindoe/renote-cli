@@ -3,6 +3,8 @@ import { BackendDb } from "./db/BackendDb"
 import { ExhaustiveSwitchError } from "./error/ExhaustiveSwitchError"
 import { addNote } from "./features/posts/add"
 import { doReview } from "./features/posts/review"
+import { CliComponent } from "./cli/model/CliComponent"
+import { cliInterpreter } from "./cli/cliInterpreter"
 
 export type RenoteCommand = "add" | "review"
 
@@ -18,21 +20,20 @@ async function main() {
     }
   }
 
-  async function runCommand(command: RenoteCommand) {
+  function commandUi(command: RenoteCommand): CliComponent {
     switch (command) {
       case "add":
-        await addNote()
-        break
+        return addNote()
       case "review":
-        await doReview()
-        break
+        //await doReview()
+        throw new Error("TODO")
       default:
         throw new ExhaustiveSwitchError(command)
     }
   }
 
   const command = readCliArguments(process.argv)
-  await runCommand(command)
+  await cliInterpreter(commandUi(command))
   tearDown()
 }
 
