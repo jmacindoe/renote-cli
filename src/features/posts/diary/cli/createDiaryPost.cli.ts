@@ -1,12 +1,10 @@
 import { CliComponent } from "../../../../cli/model/CliComponent"
-import { promptForBody } from "../../base/cli/promptForBody"
 import { promptForNextDue } from "../../base/cli/promptForNextDue"
-import { promptForTitle } from "../../base/cli/promptForTitle"
 import { createDiaryPostUseCase } from "../usecase/createDiaryPostUseCase"
+import { inputPrompt } from "../../../../cli/model/CliPrompt"
 
 export async function* createDiaryPost(): CliComponent {
-  const title = yield* promptForTitle()
-  const body = yield* promptForBody()
+  const prompt = yield* inputPrompt("Diary prompt")
   const nextDue = yield* promptForNextDue()
-  await createDiaryPostUseCase(title, body, nextDue)
+  await createDiaryPostUseCase(prompt, nextDue)
 }
