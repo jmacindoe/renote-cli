@@ -8,19 +8,21 @@ import { DiaryPost } from "../model/DiaryPost"
 import { diaryPostPlugin } from "../diaryPostPlugin"
 import { assert } from "../../../../error/assert"
 
+export const diaryNoteId = "DiaryPost"
+
 export interface DbDiaryPost extends DbBasePost {
   prompt: string
 }
 
 export const DiaryPostDb = BasePostDb.discriminator<DiaryPost & Document>(
-  "DiaryPost",
+  diaryNoteId,
   new mongoose.Schema({
     prompt: String,
   }),
 )
 
 export function deserializeDbDiaryPost(doc: DbDiaryPost): DiaryPost {
-  assert(doc.__t === diaryPostPlugin.id)
+  assert(doc.__t === diaryNoteId)
   const { _id, createdAt, nextDue } = deserializeBasePost(doc)
   return {
     type: "diary",

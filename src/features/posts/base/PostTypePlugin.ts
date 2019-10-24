@@ -1,9 +1,11 @@
-import { Post } from "./model/Post"
 import { CliComponent } from "../../../cli/model/CliComponent"
+import { Post } from "./model/Post"
+import { Document } from "mongoose"
 
 export interface PostTypePlugin {
+  id: string
   name: string
   createNote(): CliComponent
-  // Returns true if review was performed (ie can handle the post type)
-  reviewNote(post: Post): Promise<boolean>
+  reviewNote(post: Post): CliComponent
+  deserialize(doc: Document): Post
 }

@@ -6,7 +6,8 @@ import {
 } from "../../base/db/BasePostDb"
 import { TextPost } from "../model/TextPost"
 import { assert } from "../../../../error/assert"
-import { textPostPlugin } from "../textPostPlugin"
+
+export const textNoteId = "TextPost"
 
 export interface DbTextPost extends DbBasePost {
   title: string
@@ -14,7 +15,7 @@ export interface DbTextPost extends DbBasePost {
 }
 
 export const TextPostDb = BasePostDb.discriminator<DbTextPost>(
-  "TextPost",
+  textNoteId,
   new mongoose.Schema({
     title: String,
     body: String,
@@ -22,7 +23,7 @@ export const TextPostDb = BasePostDb.discriminator<DbTextPost>(
 )
 
 export function deserializeDbTextPost(doc: DbTextPost): TextPost {
-  assert(doc.__t === textPostPlugin.id)
+  assert(doc.__t === textNoteId)
   const { _id, createdAt, nextDue } = deserializeBasePost(doc)
   return {
     type: "text",

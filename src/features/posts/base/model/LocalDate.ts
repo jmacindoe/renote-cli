@@ -21,4 +21,8 @@ export class LocalDate {
   public addDays(ndays: number) {
     return new LocalDate(this.daysSince2000 + ndays)
   }
+
+  public minusDays(ndays: number) {
+    return new LocalDate(this.daysSince2000 - ndays)
+  }
 }
