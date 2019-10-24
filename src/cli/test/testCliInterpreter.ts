@@ -32,9 +32,15 @@ export async function testCliInterpreter(
   } else {
     switch (request.value.type) {
       case "print":
-        const top = assertDefined(interaction[0]) as CliPrint
-        expect(top.type).toEqual("print")
-        expect(top.text).toEqual(request.value.text)
+        const top = assertDefined(
+          interaction[0],
+          "Expected no further interaction but got: " +
+            JSON.stringify(request.value),
+        ) as CliPrint
+        expect(top).toEqual({
+          type: "print",
+          text: request.value.text,
+        })
         await testCliInterpreter(sut, interaction.slice(1))
         break
       case "prompt":
@@ -57,8 +63,14 @@ function checkQuestions(
     return {}
   }
   const actual = questions[0]
-  const expected = assertDefined(interaction[0]) as TestCliQuestionResponse
-  expect(expected.type).toEqual("question-response")
+  const expected = assertDefined(
+    interaction[0],
+    "Expected no further interaction but got: " + JSON.stringify(actual),
+  ) as TestCliQuestionResponse
+  if (expected.type !== "question-response") {
+    const json = JSON.stringify(expected)
+    fail(`Got a question (${actual.message}) but expected ${json}`)
+  }
   expect(actual.message).toEqual(expected.question)
   return Object.assign(
     {},
