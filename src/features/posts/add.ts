@@ -1,11 +1,10 @@
 import { CliComponent } from "../../cli/model/CliComponent"
 import { prompt } from "../../cli/model/CliPrompt"
-import { assertDefined } from "../../error/assert"
-import { postTypePlugins } from "./postTypePlugins"
+import { noteTypePlugins } from "./postTypePlugins"
 
 export async function* addNote(): CliComponent {
   const noteType = yield* promptForNoteType()
-  const plugin = assertDefined(postTypePlugins.find(p => p.name === noteType))
+  const plugin = noteTypePlugins.getByName(noteType)
   yield* plugin.createNote()
 }
 
@@ -14,7 +13,7 @@ async function* promptForNoteType(): CliComponent<string> {
     {
       type: "list",
       name: "noteType",
-      choices: postTypePlugins.map(p => p.name),
+      choices: noteTypePlugins.getNames(),
     },
   ])
   return choice.noteType
