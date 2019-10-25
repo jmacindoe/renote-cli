@@ -1,20 +1,9 @@
 import { CliComponent } from "../../cli/model/CliComponent"
-import { prompt } from "../../cli/model/CliPrompt"
+import { listPrompt } from "../../cli/model/CliPrompt"
 import { noteTypePlugins } from "./postTypePlugins"
 
 export async function* addNote(): CliComponent {
-  const noteType = yield* promptForNoteType()
+  const noteType = yield* listPrompt(noteTypePlugins.getUiNames())
   const plugin = noteTypePlugins.getByUiName(noteType)
   yield* plugin.createNote()
-}
-
-async function* promptForNoteType(): CliComponent<string> {
-  const choice = yield* prompt([
-    {
-      type: "list",
-      name: "noteType",
-      choices: noteTypePlugins.getUiNames(),
-    },
-  ])
-  return choice.noteType
 }

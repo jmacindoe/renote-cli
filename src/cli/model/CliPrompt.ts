@@ -6,7 +6,7 @@ export interface CliPrompt {
   questions: ReadonlyArray<DistinctQuestion<any>>
 }
 
-export function* prompt<T extends Answers>(
+function* prompt<T extends Answers>(
   questions: ReadonlyArray<DistinctQuestion<T>>,
 ): Generator<CliPrompt, T> {
   // @ts-ignore: return type is provided by inquirer lib
@@ -33,6 +33,17 @@ export async function* editorPrompt(message: string): CliComponent<string> {
       type: "editor",
       name: "result",
       message,
+    },
+  ])
+  return answer.result
+}
+
+export async function* listPrompt(choices: string[]): CliComponent<string> {
+  const answer = yield* prompt([
+    {
+      type: "list",
+      name: "result",
+      choices,
     },
   ])
   return answer.result

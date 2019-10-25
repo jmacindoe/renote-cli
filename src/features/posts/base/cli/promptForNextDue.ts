@@ -1,16 +1,10 @@
 import { CliComponent } from "../../../../cli/model/CliComponent"
-import { prompt } from "../../../../cli/model/CliPrompt"
+import { inputPrompt } from "../../../../cli/model/CliPrompt"
 import { LocalDate } from "../model/LocalDate"
 
 export async function* promptForNextDue(): CliComponent<LocalDate> {
-  const answers = yield* prompt([
-    {
-      type: "input",
-      name: "nextDueInNDays",
-      message: "Show in how many days from now?",
-    },
-  ])
-  return nextDueFromString(answers.nextDueInNDays)
+  const nextDueInNDays = yield* inputPrompt("Show in how many days from now?")
+  return nextDueFromString(nextDueInNDays)
 }
 
 function nextDueFromString(nextDueInNDays: string): LocalDate {

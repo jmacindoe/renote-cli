@@ -2,12 +2,29 @@ import { DistinctQuestion } from "inquirer"
 import { assertDefined } from "../../error/assert"
 import { CliComponent } from "../model/CliComponent"
 import { CliPrint } from "../model/CliPrint"
+import { ExhaustiveSwitchError } from "../../error/ExhaustiveSwitchError"
 
-type TestCliInteraction = TestCliQuestionResponse | TestCliPrint
+export type TestCliInteraction = TestCliPrint | TestCliPrompt
 
-export interface TestCliQuestionResponse {
-  type: "question-response"
+type TestCliPrompt = TestCliInput | TestCliEditor | TestCliList
+
+export interface TestCliInput {
+  type: "prompt"
+  kind: "input"
   question: string
+  response: string
+}
+
+export interface TestCliEditor {
+  type: "prompt"
+  kind: "editor"
+  question: string
+  response: string
+}
+
+export interface TestCliList {
+  type: "prompt"
+  kind: "list"
   response: string
 }
 
@@ -51,6 +68,8 @@ export async function testCliInterpreter(
           next,
         )
         return
+      default:
+        throw new ExhaustiveSwitchError(request.value)
     }
   }
 }
@@ -66,12 +85,12 @@ function checkQuestions(
   const expected = assertDefined(
     interaction[0],
     "Expected no further interaction but got: " + JSON.stringify(actual),
-  ) as TestCliQuestionResponse
-  if (expected.type !== "question-response") {
+  )
+  if (expected.type !== "prompt") {
     const json = JSON.stringify(expected)
-    fail(`Got a question (${actual.message}) but expected ${json}`)
+    throw new Error(`Got a question (${actual.message}) but expected ${json}`)
   }
-  expect(actual.message).toEqual(expected.question)
+  expectQuestionToMatch(actual, expected)
   return Object.assign(
     {},
     {
@@ -80,4 +99,27 @@ function checkQuestions(
     },
     checkQuestions(questions.slice(1), interaction.slice(1)),
   )
+}
+
+function expectQuestionToMatch(
+  question: DistinctQuestion<any>,
+  expected: TestCliPrompt,
+) {
+  switch (expected.kind) {
+    case "input":
+      expect(question.type).toEqual("input")
+      expect(question.message).toEqual(expected.question)
+      break
+    case "editor":
+      expect(question.type).toEqual("editor")
+      expect(question.message).toEqual(expected.question)
+      break
+    case "list":
+      expect(question.type).toEqual("list")
+      // @ts-ignore: type of question is not inferred to be a list
+      expect(question.choices).toContain(expected.response)
+      break
+    default:
+      throw new ExhaustiveSwitchError(expected)
+  }
 }

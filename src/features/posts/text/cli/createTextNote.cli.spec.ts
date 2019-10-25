@@ -1,8 +1,9 @@
-import { expectQuestion } from "../../../../cli/test/expectQuestion"
 import { testCliInterpreter } from "../../../../cli/test/testCliInterpreter"
 import { TestBackendDb } from "../../../../db/TestBackendDb"
 import { BasePostDb } from "../../base/db/BasePostDb"
 import { createTextNoteCli } from "./createTextNote.cli"
+import { expectInput } from "../../../../cli/test/expectInput"
+import { expectEditor } from "../../../../cli/test/expectEditor"
 
 const db = new TestBackendDb()
 
@@ -21,9 +22,9 @@ afterEach(async () => {
 describe("createTextNote.cli", () => {
   it("creates a text post document in mongodb", async () => {
     await testCliInterpreter(createTextNoteCli(), [
-      expectQuestion("Title", "the title"),
-      expectQuestion("Body", "The body"),
-      expectQuestion("Show in how many days from now?", "3"),
+      expectInput("Title", "the title"),
+      expectEditor("Body", "The body"),
+      expectInput("Show in how many days from now?", "3"),
     ])
 
     const docs = await BasePostDb.find().exec()

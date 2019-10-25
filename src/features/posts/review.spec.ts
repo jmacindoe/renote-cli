@@ -4,7 +4,7 @@ import { createTextPostUseCase } from "./text/usecase/createTextPostUseCase"
 import { testCliInterpreter } from "../../cli/test/testCliInterpreter"
 import { doReview } from "./review"
 import { expectPrint } from "../../cli/test/expectPrint"
-import { expectQuestion } from "../../cli/test/expectQuestion"
+import { expectInput } from "../../cli/test/expectInput"
 
 const db = new TestBackendDb()
 
@@ -29,10 +29,10 @@ describe("review", () => {
     await testCliInterpreter(doReview(), [
       expectPrint("# due yesterday\n"),
       expectPrint("body"),
-      expectQuestion("Show in how many days from now?", "3"),
+      expectInput("Show in how many days from now?", "3"),
       expectPrint("# due today\n"),
       expectPrint("body"),
-      expectQuestion("Show in how many days from now?", "2"),
+      expectInput("Show in how many days from now?", "2"),
     ])
   })
 })
