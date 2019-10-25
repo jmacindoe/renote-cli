@@ -1,15 +1,12 @@
-import { Post } from "../base/model/Post"
 import { PostTypePlugin } from "../base/PostTypePlugin"
 import { createDiaryPost } from "./cli/createDiaryPost.cli"
-import { CliComponent } from "../../../cli/model/CliComponent"
 import { deserializeDbDiaryPost, diaryNoteType } from "./db/DiaryPostDb"
+import { reviewDiaryNote } from "./cli/reviewDiaryNote.cli"
 
 export const diaryPostPlugin: PostTypePlugin = {
   type: diaryNoteType,
   uiName: "Diary",
   createNote: createDiaryPost,
-  reviewNote(post: Post): CliComponent {
-    throw new Error("TODO")
-  },
+  reviewNote: reviewDiaryNote,
   deserialize: deserializeDbDiaryPost,
 }
