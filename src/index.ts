@@ -1,8 +1,8 @@
 import yargs from "yargs"
 import { BackendDb } from "./db/BackendDb"
 import { ExhaustiveSwitchError } from "./error/ExhaustiveSwitchError"
-import { addNote } from "./features/posts/add"
-import { doReview } from "./features/posts/review"
+import { addNote } from "./features/notes/add"
+import { doReview } from "./features/notes/review"
 import { CliComponent } from "./cli/model/CliComponent"
 import { cliInterpreter } from "./cli/cliInterpreter"
 
