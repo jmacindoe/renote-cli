@@ -4,6 +4,9 @@ import { addNote } from "../add"
 import { expectList } from "../../../cli/test/expectList"
 import { expectEditor } from "../../../cli/test/expectEditor"
 import { expectInput } from "../../../cli/test/expectInput"
+import { MockTime } from "../../../test/MockTime"
+import { expectPrint } from "../../../cli/test/expectPrint"
+import { doReview } from "../review"
 
 const db = new TestBackendDb()
 
@@ -15,8 +18,13 @@ afterAll(() => {
   db.tearDown()
 })
 
+beforeEach(() => {
+  MockTime.install()
+})
+
 afterEach(async () => {
   await db.deleteAllData()
+  MockTime.reset()
 })
 
 describe("diary e2e", () => {
@@ -27,6 +35,12 @@ describe("diary e2e", () => {
       expectInput("Show in how many days from now?", "3"),
     ])
 
-    // TODO: test review
+    MockTime.tickDays(3)
+
+    await testCliInterpreter(doReview(), [
+      expectPrint("What is up?"),
+      expectEditor("Entry", "The sky"),
+      expectInput("Show in how many days from now?", "1"),
+    ])
   })
 })
