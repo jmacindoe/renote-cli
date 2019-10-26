@@ -49,15 +49,12 @@ export async function testCliInterpreter(
   } else {
     switch (request.value.type) {
       case "print":
-        const top = assertDefined(
+        const expected = assertDefined(
           interaction[0],
           "Expected no further interaction but got: " +
             JSON.stringify(request.value),
         ) as CliPrint
-        expect(top).toEqual({
-          type: "print",
-          text: request.value.text,
-        })
+        expect(request.value).toEqual(expected)
         await testCliInterpreter(sut, interaction.slice(1))
         break
       case "prompt":
