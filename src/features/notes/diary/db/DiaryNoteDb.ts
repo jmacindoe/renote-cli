@@ -16,7 +16,10 @@ export interface DbDiaryNote extends DbBaseNote {
 export const DiaryNoteDb = BaseNoteDb.discriminator<DiaryNote & Document>(
   diaryNoteType,
   new mongoose.Schema({
-    prompt: String,
+    prompt: {
+      type: String,
+      required: true,
+    },
   }),
 )
 

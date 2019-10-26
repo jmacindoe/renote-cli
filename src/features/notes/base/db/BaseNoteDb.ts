@@ -6,15 +6,21 @@ import { LocalDate } from "../model/LocalDate"
 export type DbBaseNote = DocumentWithDiscriminator & {
   _id: any
   createdAt: string
+  /// Days since Jan 1 2000
   nextDue: number
 }
 
 export const BaseNoteDb = mongoose.model<DbBaseNote>(
   "Note",
   new mongoose.Schema({
-    createdAt: String,
-    /// Days since Jan 1 2000
-    nextDue: Number,
+    createdAt: {
+      type: String,
+      required: true,
+    },
+    nextDue: {
+      type: Number,
+      required: true,
+    },
   }),
 )
 

@@ -22,8 +22,11 @@ class NotePlugins {
   }
 
   deserialize(doc: DocumentWithDiscriminator): Note {
-    // TODO: this isn't working? (date field)
-    doc.validateSync()
+    const validationError = doc.validateSync()
+    if (validationError) {
+      throw validationError
+    }
+
     const id = doc.__t
     const plugin = this.getByType(id)
     return plugin.deserialize(doc)

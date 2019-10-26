@@ -17,8 +17,14 @@ export interface DbTextNote extends DbBaseNote {
 export const TextNoteDb = BaseNoteDb.discriminator<DbTextNote>(
   textNoteType,
   new mongoose.Schema({
-    title: String,
-    body: String,
+    title: {
+      type: String,
+      required: true,
+    },
+    body: {
+      type: String,
+      required: true,
+    },
   }),
 )
 
