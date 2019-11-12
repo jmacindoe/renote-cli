@@ -1,10 +1,12 @@
-import mongoose from "mongoose"
-import { DocumentWithDiscriminator } from "../../../../db/DocumentWithDiscriminator"
+import mongoose, { Document } from "mongoose"
 import { BaseNote } from "../model/BaseNote"
 import { LocalDate } from "../model/LocalDate"
 
-export type DbBaseNote = DocumentWithDiscriminator & {
+export type DbBaseNote = Document & {
   _id: any
+  type: string
+  /// Any data specific to only this type of note
+  typeData: string
   createdAt: string
   /// Days since Jan 1 2000
   nextDue: number
@@ -16,6 +18,14 @@ export type DbBaseNote = DocumentWithDiscriminator & {
 export const BaseNoteDb = mongoose.model<DbBaseNote>(
   "Note",
   new mongoose.Schema({
+    type: {
+      type: String,
+      required: true,
+    },
+    typeData: {
+      type: String,
+      required: true,
+    },
     createdAt: {
       type: String,
       required: true,

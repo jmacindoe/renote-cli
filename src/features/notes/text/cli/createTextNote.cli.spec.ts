@@ -39,9 +39,10 @@ describe("createTextNote.cli", () => {
     const docs = await BaseNoteDb.find().exec()
     expect(docs.length).toEqual(1)
     const doc = docs[0] as any
-    expect(doc.__t).toEqual("TextNote")
-    expect(doc.title).toEqual("the title")
-    expect(doc.body).toEqual("The body")
+    expect(doc.type).toEqual("TextNote")
+    expect(doc.typeData).toMatchInlineSnapshot(
+      `"{\\"title\\":\\"the title\\",\\"body\\":\\"The body\\"}"`,
+    )
     expect(doc.nextDue).toEqual(MockTime.initialMockedLocalDate + nextDue)
     expect(doc.createdAt).toEqual("2010-01-01T11:00:00+02:00")
   })

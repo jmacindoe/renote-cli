@@ -1,7 +1,7 @@
 import { NoteTypePlugin } from "../base/NoteTypePlugin"
 import { createDiaryNote } from "./cli/createDiaryNote.cli"
-import { deserializeDbDiaryNote, diaryNoteType } from "./db/DiaryNoteDb"
 import { reviewDiaryNote } from "./cli/reviewDiaryNote.cli"
+import { diaryNoteType, deserializeDbDiaryNote } from "./model/DiaryNote"
 
 export const diaryNotePlugin: NoteTypePlugin = {
   type: diaryNoteType,

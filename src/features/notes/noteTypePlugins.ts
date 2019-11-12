@@ -1,10 +1,9 @@
-import { Document } from "mongoose"
 import { assertDefined } from "../../error/assert"
 import { NoteTypePlugin } from "./base/NoteTypePlugin"
 import { diaryNotePlugin } from "./diary/diaryNotePlugin"
 import { textNotePlugin } from "./text/textNotePlugin"
 import { Note } from "./base/model/Note"
-import { DocumentWithDiscriminator } from "../../db/DocumentWithDiscriminator"
+import { DbBaseNote } from "./base/db/BaseNoteDb"
 
 class NotePlugins {
   plugins: NoteTypePlugin[] = [textNotePlugin, diaryNotePlugin]
@@ -21,18 +20,17 @@ class NotePlugins {
     return assertDefined(this.plugins.find(p => p.uiName === uiName))
   }
 
-  deserialize(doc: DocumentWithDiscriminator): Note {
+  deserialize(doc: DbBaseNote): Note {
     const validationError = doc.validateSync()
     if (validationError) {
       throw validationError
     }
 
-    const id = doc.__t
-    const plugin = this.getByType(id)
+    const plugin = this.getByType(doc.type)
     return plugin.deserialize(doc)
   }
 
-  deserializeAll(docs: DocumentWithDiscriminator[]): Note[] {
+  deserializeAll(docs: DbBaseNote[]): Note[] {
     return docs.map(this.deserialize.bind(this))
   }
 }
