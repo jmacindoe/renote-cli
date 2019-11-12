@@ -1,6 +1,6 @@
 import { testCliInterpreter } from "../../../../cli/test/testCliInterpreter"
 import { TestBackendDb } from "../../../../db/TestBackendDb"
-import { BaseNoteDb } from "../../base/db/BaseNoteDb"
+import { NoteDb } from "../../base/db/NoteDb"
 import { createTextNoteCli } from "./createTextNote.cli"
 import { expectInput } from "../../../../cli/test/expectInput"
 import { expectEditor } from "../../../../cli/test/expectEditor"
@@ -36,7 +36,7 @@ describe("createTextNote.cli", () => {
       expectInput("Show in how many days from now?", nextDue.toString()),
     ])
 
-    const docs = await BaseNoteDb.find().exec()
+    const docs = await NoteDb.find().exec()
     expect(docs.length).toEqual(1)
     const doc = docs[0] as any
     expect(doc.type).toEqual("TextNote")

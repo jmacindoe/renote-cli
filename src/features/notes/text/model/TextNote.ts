@@ -1,5 +1,5 @@
 import { BaseNote } from "../../base/model/BaseNote"
-import { DbBaseNote, deserializeBaseNote } from "../../base/db/BaseNoteDb"
+import { DbNote, deserializeBaseNote } from "../../base/db/NoteDb"
 import { assert } from "../../../../error/assert"
 import * as t from "io-ts"
 import { decodeOrThrow } from "../../../../error/decode"
@@ -24,7 +24,7 @@ export function serializeTextNoteTypeData(title: string, body: string): string {
   })
 }
 
-export function deserializeDbTextNote(doc: DbBaseNote): TextNote {
+export function deserializeDbTextNote(doc: DbNote): TextNote {
   assert(doc.type === textNoteType)
   const { _id, createdAt, due } = deserializeBaseNote(doc)
   const { title, body } = decodeOrThrow(TextNoteTypeData, doc.typeData)

@@ -2,7 +2,7 @@ import mongoose, { Document } from "mongoose"
 import { BaseNote } from "../model/BaseNote"
 import { LocalDate } from "../model/LocalDate"
 
-export type DbBaseNote = Document & {
+export type DbNote = Document & {
   _id: any
   type: string
   /// Any data specific to only this type of note
@@ -15,7 +15,7 @@ export type DbBaseNote = Document & {
   dueAlgorithmData: string
 }
 
-export const BaseNoteDb = mongoose.model<DbBaseNote>(
+export const NoteDb = mongoose.model<DbNote>(
   "Note",
   new mongoose.Schema({
     type: {
@@ -45,7 +45,7 @@ export const BaseNoteDb = mongoose.model<DbBaseNote>(
   }),
 )
 
-export function deserializeBaseNote(doc: DbBaseNote): BaseNote {
+export function deserializeBaseNote(doc: DbNote): BaseNote {
   return {
     _id: doc._id,
     createdAt: new Date(doc.createdAt),

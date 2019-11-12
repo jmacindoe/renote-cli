@@ -1,5 +1,5 @@
 import moment from "moment"
-import { BaseNoteDb } from "../db/BaseNoteDb"
+import { NoteDb } from "../db/NoteDb"
 import { DueData } from "../model/DueData"
 
 export async function createNoteUseCase(
@@ -7,7 +7,7 @@ export async function createNoteUseCase(
   typeData: string,
   due: DueData,
 ): Promise<void> {
-  await BaseNoteDb.create({
+  await NoteDb.create({
     type,
     typeData,
     createdAt: moment().format(),

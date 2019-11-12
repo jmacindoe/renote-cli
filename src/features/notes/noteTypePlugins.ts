@@ -3,7 +3,7 @@ import { NoteTypePlugin } from "./base/NoteTypePlugin"
 import { diaryNotePlugin } from "./diary/diaryNotePlugin"
 import { textNotePlugin } from "./text/textNotePlugin"
 import { Note } from "./base/model/Note"
-import { DbBaseNote } from "./base/db/BaseNoteDb"
+import { DbNote } from "./base/db/NoteDb"
 
 class NotePlugins {
   plugins: NoteTypePlugin[] = [textNotePlugin, diaryNotePlugin]
@@ -20,7 +20,7 @@ class NotePlugins {
     return assertDefined(this.plugins.find(p => p.uiName === uiName))
   }
 
-  deserialize(doc: DbBaseNote): Note {
+  deserialize(doc: DbNote): Note {
     const validationError = doc.validateSync()
     if (validationError) {
       throw validationError
@@ -30,7 +30,7 @@ class NotePlugins {
     return plugin.deserialize(doc)
   }
 
-  deserializeAll(docs: DbBaseNote[]): Note[] {
+  deserializeAll(docs: DbNote[]): Note[] {
     return docs.map(this.deserialize.bind(this))
   }
 }
