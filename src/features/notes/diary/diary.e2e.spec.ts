@@ -40,7 +40,7 @@ describe("diary e2e", () => {
     await testCliInterpreter(doReview(), [
       expectPrint("What is up?"),
       expectEditor("Entry", "The sky"),
-      expectInput("Show in how many days from now?", "1"),
+      expectInput("Show in how many days from now? [3]", "1"),
     ])
   })
 })

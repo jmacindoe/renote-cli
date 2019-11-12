@@ -17,8 +17,8 @@ export async function* doReview(): CliComponent {
 async function* reviewNotes(notes: Note[]): CliComponent {
   for (const note of notes) {
     yield* reviewNote(note)
-    const nextDue = yield* promptForNextDue()
-    await updateDueDateUseCase(note._id, nextDue)
+    const due = yield* promptForNextDue(note.due)
+    await updateDueDateUseCase(note._id, due)
   }
 }
 

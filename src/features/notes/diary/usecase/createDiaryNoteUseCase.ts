@@ -1,14 +1,15 @@
 import moment from "moment"
-import { LocalDate } from "../../base/model/LocalDate"
 import { DiaryNoteDb } from "../db/DiaryNoteDb"
+import { DueData } from "../../base/model/DueData"
 
 export async function createDiaryNoteUseCase(
   prompt: string,
-  nextDue: LocalDate,
+  due: DueData,
 ): Promise<void> {
   await DiaryNoteDb.create({
     prompt,
     createdAt: moment().format(),
-    nextDue: nextDue.daysSince1Jan2000(),
+    nextDue: due.nextDue.daysSince1Jan2000(),
+    algorithmData: due.algorithmData,
   })
 }

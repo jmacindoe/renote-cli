@@ -21,8 +21,14 @@ afterEach(async () => {
 describe("getDueNotesUseCase", () => {
   it("gets due notes", async () => {
     const today = new LocalDate(1000)
-    await createTextNoteUseCase("title", "body", new LocalDate(1000))
-    await createDiaryNoteUseCase("prompt", new LocalDate(999))
+    await createTextNoteUseCase("title", "body", {
+      nextDue: new LocalDate(1000),
+      algorithmData: "whatever",
+    })
+    await createDiaryNoteUseCase("prompt", {
+      nextDue: new LocalDate(999),
+      algorithmData: "something",
+    })
     const notes = await getDueNotesUseCase(today)
     expect(notes).toHaveLength(2)
     const customMatchers = {
@@ -36,8 +42,11 @@ describe("getDueNotesUseCase", () => {
         "_id": Anything,
         "body": "body",
         "createdAt": Any<Date>,
-        "nextDue": LocalDate {
-          "daysSince2000": 1000,
+        "due": Object {
+          "algorithmData": "whatever",
+          "nextDue": LocalDate {
+            "daysSince2000": 1000,
+          },
         },
         "title": "title",
         "type": "TextNote",
@@ -50,8 +59,11 @@ describe("getDueNotesUseCase", () => {
       Object {
         "_id": Anything,
         "createdAt": Any<Date>,
-        "nextDue": LocalDate {
-          "daysSince2000": 999,
+        "due": Object {
+          "algorithmData": "something",
+          "nextDue": LocalDate {
+            "daysSince2000": 999,
+          },
         },
         "prompt": "prompt",
         "type": "DiaryNote",
@@ -62,7 +74,10 @@ describe("getDueNotesUseCase", () => {
 
   it("doesn't get notes not yet due", async () => {
     const today = new LocalDate(1000)
-    await createTextNoteUseCase("title", "body", new LocalDate(1001))
+    await createTextNoteUseCase("title", "body", {
+      nextDue: new LocalDate(1001),
+      algorithmData: "whatever",
+    })
     const notes = await getDueNotesUseCase(today)
     expect(notes).toHaveLength(0)
   })

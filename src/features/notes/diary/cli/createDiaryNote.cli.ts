@@ -5,6 +5,6 @@ import { editorPrompt } from "../../../../cli/model/CliPrompt"
 
 export async function* createDiaryNote(): CliComponent {
   const prompt = yield* editorPrompt("Diary prompt")
-  const nextDue = yield* promptForNextDue()
-  await createDiaryNoteUseCase(prompt, nextDue)
+  const due = yield* promptForNextDue()
+  await createDiaryNoteUseCase(prompt, due)
 }

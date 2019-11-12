@@ -30,13 +30,13 @@ export const TextNoteDb = BaseNoteDb.discriminator<DbTextNote>(
 
 export function deserializeDbTextNote(doc: DbTextNote): TextNote {
   assert(doc.__t === textNoteType)
-  const { _id, createdAt, nextDue } = deserializeBaseNote(doc)
+  const { _id, createdAt, due } = deserializeBaseNote(doc)
   return {
     type: textNoteType,
     _id,
     title: doc.title,
     body: doc.body,
     createdAt,
-    nextDue,
+    due,
   }
 }

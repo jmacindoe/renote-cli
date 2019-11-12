@@ -1,7 +1,7 @@
-import { LocalDate } from "./LocalDate"
+import { DueData } from "./DueData"
 
 export interface BaseNote {
   _id: any
   createdAt: Date
-  nextDue: LocalDate
+  due: DueData
 }

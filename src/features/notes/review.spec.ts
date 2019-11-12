@@ -28,29 +28,26 @@ afterEach(async () => {
 
 describe("review", () => {
   it("reviews the due notes", async () => {
-    await createTextNoteUseCase(
-      "due yesterday",
-      "body",
-      new LocalDate(MockTime.initialMockedLocalDate - 1),
-    )
-    await createTextNoteUseCase(
-      "due today",
-      "body",
-      new LocalDate(MockTime.initialMockedLocalDate),
-    )
-    await createTextNoteUseCase(
-      "not due yet",
-      "body",
-      new LocalDate(MockTime.initialMockedLocalDate + 1),
-    )
+    await createTextNoteUseCase("due yesterday", "body", {
+      nextDue: new LocalDate(MockTime.initialMockedLocalDate - 1),
+      algorithmData: "NDays|1",
+    })
+    await createTextNoteUseCase("due today", "body", {
+      nextDue: new LocalDate(MockTime.initialMockedLocalDate),
+      algorithmData: "NDays|1",
+    })
+    await createTextNoteUseCase("not due yet", "body", {
+      nextDue: new LocalDate(MockTime.initialMockedLocalDate + 1),
+      algorithmData: "NDays|1",
+    })
 
     await testCliInterpreter(doReview(), [
       expectPrint("# due yesterday\n"),
       expectPrint("body"),
-      expectInput("Show in how many days from now?", "1"),
+      expectInput("Show in how many days from now? [1]", "1"),
       expectPrint("# due today\n"),
       expectPrint("body"),
-      expectInput("Show in how many days from now?", "2"),
+      expectInput("Show in how many days from now? [1]", "2"),
     ])
 
     MockTime.tickDays(1)
@@ -58,10 +55,10 @@ describe("review", () => {
     await testCliInterpreter(doReview(), [
       expectPrint("# due yesterday\n"),
       expectPrint("body"),
-      expectInput("Show in how many days from now?", "1"),
+      expectInput("Show in how many days from now? [1]", "1"),
       expectPrint("# not due yet\n"),
       expectPrint("body"),
-      expectInput("Show in how many days from now?", "2"),
+      expectInput("Show in how many days from now? [1]", "2"),
     ])
   })
 })

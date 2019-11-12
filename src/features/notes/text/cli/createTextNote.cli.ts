@@ -6,6 +6,6 @@ import { inputPrompt, editorPrompt } from "../../../../cli/model/CliPrompt"
 export async function* createTextNoteCli(): CliComponent {
   const title = yield* inputPrompt("Title")
   const body = yield* editorPrompt("Body")
-  const nextDue = yield* promptForNextDue()
-  await createTextNoteUseCase(title, body, nextDue)
+  const due = yield* promptForNextDue()
+  await createTextNoteUseCase(title, body, due)
 }

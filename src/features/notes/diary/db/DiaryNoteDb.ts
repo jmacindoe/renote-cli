@@ -13,7 +13,7 @@ export interface DbDiaryNote extends DbBaseNote {
   prompt: string
 }
 
-export const DiaryNoteDb = BaseNoteDb.discriminator<DiaryNote & Document>(
+export const DiaryNoteDb = BaseNoteDb.discriminator<DbDiaryNote & Document>(
   diaryNoteType,
   new mongoose.Schema({
     prompt: {
@@ -25,12 +25,12 @@ export const DiaryNoteDb = BaseNoteDb.discriminator<DiaryNote & Document>(
 
 export function deserializeDbDiaryNote(doc: DbDiaryNote): DiaryNote {
   assert(doc.__t === diaryNoteType)
-  const { _id, createdAt, nextDue } = deserializeBaseNote(doc)
+  const { _id, createdAt, due } = deserializeBaseNote(doc)
   return {
     type: diaryNoteType,
     _id,
     prompt: doc.prompt,
     createdAt,
-    nextDue,
+    due,
   }
 }
