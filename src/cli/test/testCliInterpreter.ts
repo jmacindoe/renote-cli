@@ -33,11 +33,11 @@ export interface TestCliPrint {
   text: string
 }
 
-export async function testCliInterpreter(
-  sut: CliComponent,
+export async function testCliInterpreter<TReturn = any>(
+  sut: CliComponent<TReturn>,
   interaction: TestCliInteraction[],
   next?: any,
-) {
+): Promise<TReturn> {
   const request = await sut.next(next)
   if (request.done) {
     if (interaction.length !== 0) {
@@ -45,6 +45,8 @@ export async function testCliInterpreter(
         "sut is done but expected further interaction: " +
           JSON.stringify(interaction),
       )
+    } else {
+      return request.value
     }
   } else {
     switch (request.value.type) {
@@ -55,16 +57,14 @@ export async function testCliInterpreter(
             JSON.stringify(request.value),
         ) as CliPrint
         expect(request.value).toEqual(expected)
-        await testCliInterpreter(sut, interaction.slice(1))
-        break
+        return await testCliInterpreter(sut, interaction.slice(1))
       case "prompt":
         const next = checkQuestions(request.value.questions, interaction)
-        await testCliInterpreter(
+        return await testCliInterpreter(
           sut,
           interaction.slice(request.value.questions.length),
           next,
         )
-        return
       default:
         throw new ExhaustiveSwitchError(request.value)
     }
