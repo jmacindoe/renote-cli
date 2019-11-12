@@ -7,7 +7,8 @@ export async function updateDueDateUseCase(_id: any, newDue: DueData) {
     {
       $set: {
         nextDue: newDue.nextDue.daysSince1Jan2000(),
-        algorithmData: newDue.algorithmData,
+        dueAlgorithm: newDue.algorithm,
+        dueAlgorithmData: newDue.algorithmData,
       },
     },
   ).exec()

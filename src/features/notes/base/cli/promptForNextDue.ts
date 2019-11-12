@@ -3,7 +3,6 @@ import { inputPrompt } from "../../../../cli/model/CliPrompt"
 import { LocalDate } from "../model/LocalDate"
 import { DueData } from "../model/DueData"
 
-const delimiter = "|"
 const nDaysAlgorithm = "NDays"
 
 export async function* promptForNextDue(
@@ -25,17 +24,22 @@ export async function* firstTimePrompt(): CliComponent<DueData> {
     return yield* firstTimePrompt()
   }
 
-  const algorithmData = `${nDaysAlgorithm}${delimiter}${nextDueInNDays}`
   return {
     nextDue,
-    algorithmData,
+    algorithm: nDaysAlgorithm,
+    algorithmData: nextDueInNDays,
   }
 }
 
 export async function* updateDueDate(
   previousDueData: DueData,
 ): CliComponent<DueData> {
-  const previousNDays = getPreviousNDays(previousDueData)
+  // Currently only NDays is implemented
+  if (previousDueData.algorithm !== nDaysAlgorithm) {
+    throw new Error("Unknown due algorithm: " + previousDueData.algorithmData)
+  }
+
+  const previousNDays = previousDueData.algorithmData
   const input = yield* inputPrompt(
     `Show in how many days from now? [${previousNDays}]`,
   )
@@ -46,25 +50,14 @@ export async function* updateDueDate(
     return yield* updateDueDate(previousDueData)
   }
 
-  const algorithmData = `${nDaysAlgorithm}${delimiter}${nextDueInNDays}`
   return {
     nextDue,
-    algorithmData,
+    algorithm: nDaysAlgorithm,
+    algorithmData: nextDueInNDays,
   }
 }
 
 function nextDueFromString(nextDueInNDays: string): LocalDate | undefined {
   const nextDueInt = parseInt(nextDueInNDays, 10)
   return isNaN(nextDueInt) ? undefined : new LocalDate().addDays(nextDueInt)
-}
-
-function getPreviousNDays(previousDueData: DueData): string {
-  const [algorithm, nDays] = previousDueData.algorithmData.split(delimiter)
-
-  // Currently only NDays is implemented
-  if (algorithm !== nDaysAlgorithm) {
-    throw new Error("Unknown due algorithm: " + previousDueData.algorithmData)
-  }
-
-  return nDays
 }

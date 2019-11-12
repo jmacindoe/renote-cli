@@ -8,8 +8,9 @@ export type DbBaseNote = DocumentWithDiscriminator & {
   createdAt: string
   /// Days since Jan 1 2000
   nextDue: number
-  /// Any data required to calculate the next due date. Formated as `${algorithm}|${data}`.
-  algorithmData: string
+  dueAlgorithm: string
+  /// Any data required to calculate the next due date
+  dueAlgorithmData: string
 }
 
 export const BaseNoteDb = mongoose.model<DbBaseNote>(
@@ -23,7 +24,11 @@ export const BaseNoteDb = mongoose.model<DbBaseNote>(
       type: Number,
       required: true,
     },
-    algorithmData: {
+    dueAlgorithm: {
+      type: String,
+      required: true,
+    },
+    dueAlgorithmData: {
       type: String,
       required: true,
     },
@@ -36,7 +41,8 @@ export function deserializeBaseNote(doc: DbBaseNote): BaseNote {
     createdAt: new Date(doc.createdAt),
     due: {
       nextDue: new LocalDate(doc.nextDue),
-      algorithmData: doc.algorithmData,
+      algorithm: doc.dueAlgorithm,
+      algorithmData: doc.dueAlgorithmData,
     },
   }
 }

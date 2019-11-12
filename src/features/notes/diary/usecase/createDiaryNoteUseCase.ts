@@ -10,6 +10,7 @@ export async function createDiaryNoteUseCase(
     prompt,
     createdAt: moment().format(),
     nextDue: due.nextDue.daysSince1Jan2000(),
-    algorithmData: due.algorithmData,
+    dueAlgorithm: due.algorithm,
+    dueAlgorithmData: due.algorithmData,
   })
 }

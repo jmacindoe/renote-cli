@@ -12,6 +12,7 @@ export async function createTextNoteUseCase(
     body,
     createdAt: moment().format(),
     nextDue: due.nextDue.daysSince1Jan2000(),
-    algorithmData: due.algorithmData,
+    dueAlgorithm: due.algorithm,
+    dueAlgorithmData: due.algorithmData,
   })
 }

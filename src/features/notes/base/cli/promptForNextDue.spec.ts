@@ -19,7 +19,8 @@ describe("promptForNextDue", () => {
     ])
     expect(actual).toMatchInlineSnapshot(`
       Object {
-        "algorithmData": "NDays|3",
+        "algorithm": "NDays",
+        "algorithmData": "3",
         "nextDue": LocalDate {
           "daysSince2000": 3656,
         },
@@ -29,7 +30,8 @@ describe("promptForNextDue", () => {
 
   it("reuses previous nDays on empty input", async () => {
     const previous = {
-      algorithmData: "NDays|5",
+      algorithm: "NDays",
+      algorithmData: "5",
       nextDue: new LocalDate(3000),
     }
     const actual = await testCliInterpreter(promptForNextDue(previous), [
@@ -37,7 +39,8 @@ describe("promptForNextDue", () => {
     ])
     expect(actual).toMatchInlineSnapshot(`
       Object {
-        "algorithmData": "NDays|5",
+        "algorithm": "NDays",
+        "algorithmData": "5",
         "nextDue": LocalDate {
           "daysSince2000": 3658,
         },
@@ -53,7 +56,8 @@ describe("promptForNextDue", () => {
     ])
     expect(actual).toMatchInlineSnapshot(`
       Object {
-        "algorithmData": "NDays|3",
+        "algorithm": "NDays",
+        "algorithmData": "3",
         "nextDue": LocalDate {
           "daysSince2000": 3656,
         },
@@ -63,7 +67,8 @@ describe("promptForNextDue", () => {
 
   it("Uses new nDays during review", async () => {
     const previous = {
-      algorithmData: "NDays|5",
+      algorithm: "NDays",
+      algorithmData: "5",
       nextDue: new LocalDate(3000),
     }
     const actual = await testCliInterpreter(promptForNextDue(previous), [
@@ -71,7 +76,8 @@ describe("promptForNextDue", () => {
     ])
     expect(actual).toMatchInlineSnapshot(`
       Object {
-        "algorithmData": "NDays|7",
+        "algorithm": "NDays",
+        "algorithmData": "7",
         "nextDue": LocalDate {
           "daysSince2000": 3660,
         },
@@ -86,7 +92,8 @@ describe("promptForNextDue", () => {
     ])
     expect(actual).toMatchInlineSnapshot(`
       Object {
-        "algorithmData": "NDays|3",
+        "algorithm": "NDays",
+        "algorithmData": "3",
         "nextDue": LocalDate {
           "daysSince2000": 3656,
         },

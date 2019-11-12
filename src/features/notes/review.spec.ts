@@ -30,15 +30,18 @@ describe("review", () => {
   it("reviews the due notes", async () => {
     await createTextNoteUseCase("due yesterday", "body", {
       nextDue: new LocalDate(MockTime.initialMockedLocalDate - 1),
-      algorithmData: "NDays|1",
+      algorithm: "NDays",
+      algorithmData: "1",
     })
     await createTextNoteUseCase("due today", "body", {
       nextDue: new LocalDate(MockTime.initialMockedLocalDate),
-      algorithmData: "NDays|1",
+      algorithm: "NDays",
+      algorithmData: "1",
     })
     await createTextNoteUseCase("not due yet", "body", {
       nextDue: new LocalDate(MockTime.initialMockedLocalDate + 1),
-      algorithmData: "NDays|1",
+      algorithm: "NDays",
+      algorithmData: "1",
     })
 
     await testCliInterpreter(doReview(), [

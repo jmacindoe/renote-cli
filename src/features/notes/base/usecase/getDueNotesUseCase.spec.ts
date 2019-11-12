@@ -23,10 +23,12 @@ describe("getDueNotesUseCase", () => {
     const today = new LocalDate(1000)
     await createTextNoteUseCase("title", "body", {
       nextDue: new LocalDate(1000),
+      algorithm: "alg",
       algorithmData: "whatever",
     })
     await createDiaryNoteUseCase("prompt", {
       nextDue: new LocalDate(999),
+      algorithm: "alg",
       algorithmData: "something",
     })
     const notes = await getDueNotesUseCase(today)
@@ -43,6 +45,7 @@ describe("getDueNotesUseCase", () => {
         "body": "body",
         "createdAt": Any<Date>,
         "due": Object {
+          "algorithm": "alg",
           "algorithmData": "whatever",
           "nextDue": LocalDate {
             "daysSince2000": 1000,
@@ -60,6 +63,7 @@ describe("getDueNotesUseCase", () => {
         "_id": Anything,
         "createdAt": Any<Date>,
         "due": Object {
+          "algorithm": "alg",
           "algorithmData": "something",
           "nextDue": LocalDate {
             "daysSince2000": 999,
@@ -76,6 +80,7 @@ describe("getDueNotesUseCase", () => {
     const today = new LocalDate(1000)
     await createTextNoteUseCase("title", "body", {
       nextDue: new LocalDate(1001),
+      algorithm: "alg",
       algorithmData: "whatever",
     })
     const notes = await getDueNotesUseCase(today)
