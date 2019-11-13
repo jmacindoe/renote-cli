@@ -9,4 +9,7 @@ export const diaryNotePlugin: NoteTypePlugin = {
   createNote: createDiaryNote,
   reviewNote: reviewDiaryNote,
   deserialize: deserializeDbDiaryNote,
+  searchText(prompt: string): string {
+    return prompt
+  },
 }

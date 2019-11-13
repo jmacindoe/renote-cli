@@ -13,6 +13,7 @@ export type DbNote = Document & {
   dueAlgorithm: string
   /// Any data required to calculate the next due date
   dueAlgorithmData: string
+  searchText: string
 }
 
 export const NoteDb = mongoose.model<DbNote>(
@@ -39,6 +40,10 @@ export const NoteDb = mongoose.model<DbNote>(
       required: true,
     },
     dueAlgorithmData: {
+      type: String,
+      required: true,
+    },
+    searchText: {
       type: String,
       required: true,
     },
