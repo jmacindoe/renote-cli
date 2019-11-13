@@ -8,8 +8,10 @@ export async function* mainMenu(): CliComponent {
   switch (command) {
     case "Review":
       yield* doReview()
+      break
     case "Add":
       yield* addNote()
+      break
     default:
       throw new Error("Unknown command: " + command)
   }
