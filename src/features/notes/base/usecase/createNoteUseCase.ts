@@ -9,7 +9,6 @@ export async function createNoteUseCase(
   due: DueData,
 ): Promise<void> {
   await NoteDb.create({
-    deck: "default", // Decks aren't implemented yet
     type,
     typeData,
     createdAt: moment().format(),
