@@ -8,6 +8,7 @@ import { noteTypePlugins } from "./noteTypePlugins"
 export async function* doReview(): CliComponent {
   const notes = await getDueNotesUseCase()
   if (notes.length === 0) {
+    // tslint:disable-next-line: no-console
     console.log("Nothing due today")
   } else {
     yield* reviewNotes(notes)

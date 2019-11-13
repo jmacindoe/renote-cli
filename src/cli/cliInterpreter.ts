@@ -15,12 +15,13 @@ async function interpreter(sut: CliComponent, next?: any) {
   const operation = request.value
   switch (operation.type) {
     case "print":
+      // tslint:disable-next-line: no-console
       console.log(operation.text)
       await interpreter(sut)
       break
     case "prompt":
-      const next = await inquirer.prompt(operation.questions)
-      await interpreter(sut, next)
+      const newNext = await inquirer.prompt(operation.questions)
+      await interpreter(sut, newNext)
       break
     default:
       throw new ExhaustiveSwitchError(operation)

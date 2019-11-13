@@ -2,6 +2,7 @@ import MockDate from "mockdate"
 import moment from "moment"
 
 const MockTimeConstructor = () => {
+  // tslint:disable-next-line: no-var-keyword
   var installed = false
 
   return {

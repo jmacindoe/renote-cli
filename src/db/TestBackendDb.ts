@@ -3,18 +3,18 @@ import mongoose from "mongoose"
 import { BackendDb } from "./BackendDb"
 
 export class TestBackendDb {
-  mongod = new MongoMemoryServer()
+  private mongod = new MongoMemoryServer()
 
-  async init() {
+  public async init() {
     const uri = await this.mongod.getConnectionString()
     BackendDb.init(uri)
   }
 
-  tearDown() {
-    BackendDb.tearDown()
+  public async tearDown() {
+    await BackendDb.tearDown()
   }
 
-  async deleteAllData() {
+  public async deleteAllData() {
     // @ts-ignore: missing from type signature
     const { host, port } = mongoose.connection
     const testPort = await this.mongod.getPort()
@@ -26,7 +26,7 @@ export class TestBackendDb {
     const db = mongoose.connection.db
     if (db) {
       const collections = await db.listCollections().toArray()
-      Promise.all(
+      await Promise.all(
         collections
           .map(({ name }) => name)
           .map(collection =>
@@ -36,7 +36,10 @@ export class TestBackendDb {
     }
   }
 
-  async createDocument(collectionName: string, document: any): Promise<any> {
+  public async createDocument(
+    collectionName: string,
+    document: any,
+  ): Promise<any> {
     const { ops } = await mongoose.connection.db
       .collection(collectionName)
       .insertOne(document)

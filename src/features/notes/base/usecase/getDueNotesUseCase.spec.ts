@@ -10,8 +10,8 @@ beforeAll(async () => {
   await db.init()
 })
 
-afterAll(() => {
-  db.tearDown()
+afterAll(async () => {
+  await db.tearDown()
 })
 
 afterEach(async () => {

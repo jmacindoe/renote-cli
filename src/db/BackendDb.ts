@@ -19,7 +19,7 @@ export const BackendDb = {
     })
   },
 
-  tearDown() {
-    mongoose.disconnect()
+  async tearDown() {
+    await mongoose.disconnect()
   },
 }

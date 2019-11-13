@@ -59,11 +59,11 @@ export async function testCliInterpreter<TReturn = any>(
         expect(request.value).toEqual(expected)
         return await testCliInterpreter(sut, interaction.slice(1))
       case "prompt":
-        const next = checkQuestions(request.value.questions, interaction)
+        const newNext = checkQuestions(request.value.questions, interaction)
         return await testCliInterpreter(
           sut,
           interaction.slice(request.value.questions.length),
-          next,
+          newNext,
         )
       default:
         throw new ExhaustiveSwitchError(request.value)
