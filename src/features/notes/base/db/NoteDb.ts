@@ -46,6 +46,7 @@ export const NoteDb = mongoose.model<DbNote>(
     searchText: {
       type: String,
       required: true,
+      index: "text",
     },
   }),
 )

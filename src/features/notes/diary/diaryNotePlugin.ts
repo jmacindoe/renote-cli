@@ -35,4 +35,7 @@ export const diaryNotePlugin = {
   searchText(prompt: string): string {
     return prompt
   },
+  debugDescription(note: DiaryNote): string {
+    return note.prompt
+  },
 }

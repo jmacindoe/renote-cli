@@ -9,6 +9,7 @@ export const BackendDb = {
       .connect(mongoUri, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        useCreateIndex: true,
       })
       .catch(e => Errors.recordError(e))
 

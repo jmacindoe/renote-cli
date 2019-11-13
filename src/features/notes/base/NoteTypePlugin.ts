@@ -8,4 +8,5 @@ export interface NoteTypePlugin {
   createNote(): CliComponent
   reviewNote(note: Note): CliComponent
   deserialize(doc: Document): Note
+  debugDescription(note: Note): string
 }

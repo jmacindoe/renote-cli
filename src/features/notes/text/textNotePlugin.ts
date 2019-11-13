@@ -5,6 +5,7 @@ import * as t from "io-ts"
 import { DbNote, deserializeBaseNote } from "../base/db/NoteDb"
 import { assert } from "../../../error/assert"
 import { decodeOrThrow } from "../../../error/decode"
+import { Note } from "../base/model/Note"
 
 const TextNoteTypeData = t.type({
   title: t.string,
@@ -37,5 +38,8 @@ export const textNotePlugin = {
   },
   searchText(title: string, body: string): string {
     return title + " " + body
+  },
+  debugDescription(note: TextNote): string {
+    return note.title + "|" + note.body
   },
 }

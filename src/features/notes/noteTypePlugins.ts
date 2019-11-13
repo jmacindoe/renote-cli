@@ -33,6 +33,11 @@ class NotePlugins {
   deserializeAll(docs: DbNote[]): Note[] {
     return docs.map(this.deserialize.bind(this))
   }
+
+  debugDescription(note: Note): string {
+    const plugin = this.getByType(note.type)
+    return plugin.debugDescription(note)
+  }
 }
 
 export const noteTypePlugins = new NotePlugins()
