@@ -4,13 +4,14 @@ import { updateDueDateUseCase } from "./base/usecase/updateDueDateUseCase"
 import { CliComponent } from "../../cli/model/CliComponent"
 import { promptForNextDue } from "./base/cli/promptForNextDue"
 import { noteTypePlugins } from "./noteTypePlugins"
+import { print } from "../../cli/model/CliPrint"
 
 export async function* doReview(): CliComponent {
   const notes = await getDueNotesUseCase()
   if (notes.length === 0) {
-    // tslint:disable-next-line: no-console
-    console.log("Nothing due today")
+    yield* print("Nothing due today")
   } else {
+    yield* print("Due today: " + notes.length)
     yield* reviewNotes(notes)
   }
 }
