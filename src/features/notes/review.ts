@@ -5,6 +5,8 @@ import { CliComponent } from "../../cli/model/CliComponent"
 import { promptForNextDue } from "./base/cli/promptForNextDue"
 import { noteTypePlugins } from "./noteTypePlugins"
 import { print } from "../../cli/model/CliPrint"
+// @ts-ignore
+import shuffle from "knuth-shuffle-seeded"
 
 export async function* doReview(): CliComponent {
   const notes = await getDueNotesUseCase()
@@ -17,7 +19,8 @@ export async function* doReview(): CliComponent {
 }
 
 async function* reviewNotes(notes: Note[]): CliComponent {
-  for (const note of notes) {
+  const shuffled = shuffle(notes, "seed")
+  for (const note of shuffled) {
     yield* reviewNote(note)
     const due = yield* promptForNextDue(note.due)
     await updateDueDateUseCase(note._id, due)

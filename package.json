@@ -21,6 +21,7 @@
     "fp-ts": "^2.1.2",
     "inquirer": "^7.0.0",
     "io-ts": "^2.0.1",
+    "knuth-shuffle-seeded": "^1.0.6",
     "moment": "^2.24.0",
     "mongoose": "^5.7.1",
     "yargs": "^14.0.0"
