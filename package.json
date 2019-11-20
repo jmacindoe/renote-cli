@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "run": "npm run build && node lib/index.js",
+    "add": "npm run build && node lib/index.js add",
     "test": "jest",
     "lint": "tslint --project .",
     "check": "npm run build && npm run lint && npm run test"

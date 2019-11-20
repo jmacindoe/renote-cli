@@ -1,12 +1,14 @@
 import { BackendDb } from "./db/BackendDb"
 import { cliInterpreter } from "./cli/cliInterpreter"
 import { mainMenu } from "./features/notes/menu"
+import { addNote } from "./features/notes/add"
 
 export type RenoteCommand = "add" | "review"
 
 async function main() {
   init()
-  await cliInterpreter(mainMenu())
+  const ui = process.argv[2] === "add" ? addNote() : mainMenu()
+  await cliInterpreter(ui)
   await tearDown()
 }
 
