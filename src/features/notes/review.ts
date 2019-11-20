@@ -13,7 +13,7 @@ export async function* doReview(): CliComponent {
   if (notes.length === 0) {
     yield* print("Nothing due today")
   } else {
-    yield* print("Due today: " + notes.length)
+    yield* print(`\nDue today: ${notes.length}\n`)
     yield* reviewNotes(notes)
   }
 }

@@ -38,7 +38,7 @@ describe("diary e2e", () => {
     MockTime.tickDays(3)
 
     await testCliInterpreter(doReview(), [
-      expectPrint("Due today: 1"),
+      expectPrint("\nDue today: 1\n"),
       expectPrint("What is up?"),
       expectEditor("Entry", "The sky"),
       expectInput("Show in how many days from now? [3]", "1"),
