@@ -4,7 +4,10 @@ import { CliComponent } from "../model/CliComponent"
 import { CliPrint } from "../model/CliPrint"
 import { ExhaustiveSwitchError } from "../../error/ExhaustiveSwitchError"
 
-export type TestCliInteraction = TestCliPrint | TestCliPrompt
+export type TestCliInteraction =
+  | TestCliPrint
+  | TestCliPrompt
+  | AnyFurtherInteraction
 
 type TestCliPrompt = TestCliInput | TestCliEditor | TestCliList
 
@@ -33,6 +36,10 @@ export interface TestCliPrint {
   text: string
 }
 
+export interface AnyFurtherInteraction {
+  type: "any-further-interaction"
+}
+
 export async function testCliInterpreter<TReturn = any>(
   sut: CliComponent<TReturn>,
   interaction: TestCliInteraction[],
@@ -49,6 +56,11 @@ export async function testCliInterpreter<TReturn = any>(
       return request.value
     }
   } else {
+    if (interaction[0] && interaction[0].type === "any-further-interaction") {
+      // @ts-ignore: We can't know the return value since we skip the end of the interaction. Presumably we don't care about it.
+      return undefined
+    }
+
     switch (request.value.type) {
       case "print":
         const expected = assertDefined(
