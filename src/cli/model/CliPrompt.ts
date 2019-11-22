@@ -3,48 +3,44 @@ import { CliComponent } from "./CliComponent"
 
 export interface CliPrompt {
   type: "prompt"
-  questions: ReadonlyArray<DistinctQuestion<any>>
+  question: DistinctQuestion<any>
 }
 
-function* prompt<T extends Answers>(
-  questions: ReadonlyArray<DistinctQuestion<T>>,
-): Generator<CliPrompt, T> {
+function* prompt(question: DistinctQuestion): Generator<CliPrompt, string> {
   // @ts-ignore: return type is provided by inquirer lib
   return yield {
     type: "prompt" as "prompt",
-    questions,
+    question,
   }
 }
 
 export async function* inputPrompt(message: string): CliComponent<string> {
-  const answer = yield* prompt([
-    {
-      type: "input",
-      name: "result",
-      message,
-    },
-  ])
-  return answer.result
+  return yield* prompt({
+    type: "input",
+    name: "result",
+    message,
+  })
 }
 
-export async function* editorPrompt(message: string): CliComponent<string> {
-  const answer = yield* prompt([
-    {
-      type: "editor",
-      name: "result",
-      message,
-    },
-  ])
-  return answer.result
+export async function* editorPrompt(
+  message: string,
+  prefill: string = "",
+): CliComponent<string> {
+  return yield* prompt({
+    type: "editor",
+    name: "result",
+    default: prefill,
+    message,
+  })
 }
 
-export async function* listPrompt(choices: string[]): CliComponent<string> {
-  const answer = yield* prompt([
-    {
-      type: "list",
-      name: "result",
-      choices,
-    },
-  ])
-  return answer.result
+/// Returns `value` or the chosen string
+export async function* listPrompt(
+  choices: string[] | Array<{ name: string; value: any }>,
+): CliComponent<any> {
+  return yield* prompt({
+    type: "list",
+    name: "result",
+    choices,
+  })
 }

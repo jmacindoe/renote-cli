@@ -1,7 +1,6 @@
 import { DistinctQuestion } from "inquirer"
 import { assertDefined } from "../../error/assert"
 import { CliComponent } from "../model/CliComponent"
-import { CliPrint } from "../model/CliPrint"
 import { ExhaustiveSwitchError } from "../../error/ExhaustiveSwitchError"
 
 export type TestCliInteraction =
@@ -61,73 +60,51 @@ export async function testCliInterpreter<TReturn = any>(
       return undefined
     }
 
+    const expected = assertDefined(
+      interaction[0],
+      "Expected no further interaction but got: " +
+        JSON.stringify(request.value),
+    )
+
+    if (expected.type !== request.value.type) {
+      const json = JSON.stringify(expected)
+      throw new Error(`Got a ${request.value.type} but expected ${json}`)
+    }
+
     switch (request.value.type) {
       case "print":
-        const expected = assertDefined(
-          interaction[0],
-          "Expected no further interaction but got: " +
-            JSON.stringify(request.value),
-        ) as CliPrint
         expect(request.value).toEqual(expected)
         return await testCliInterpreter(sut, interaction.slice(1))
       case "prompt":
-        const newNext = checkQuestions(request.value.questions, interaction)
-        return await testCliInterpreter(
-          sut,
-          interaction.slice(request.value.questions.length),
-          newNext,
+        const newNext = checkQuestion(
+          request.value.question,
+          expected as TestCliPrompt,
         )
+        return await testCliInterpreter(sut, interaction.slice(1), newNext)
       default:
         throw new ExhaustiveSwitchError(request.value)
     }
   }
 }
 
-function checkQuestions(
-  questions: ReadonlyArray<DistinctQuestion<any>>,
-  interaction: TestCliInteraction[],
-): any {
-  if (questions.length === 0) {
-    return {}
-  }
-  const actual = questions[0]
-  const expected = assertDefined(
-    interaction[0],
-    "Expected no further interaction but got: " + JSON.stringify(actual),
-  )
-  if (expected.type !== "prompt") {
-    const json = JSON.stringify(expected)
-    throw new Error(`Got a question (${actual.message}) but expected ${json}`)
-  }
-  expectQuestionToMatch(actual, expected)
-  return Object.assign(
-    {},
-    {
-      // @ts-ignore
-      [actual.name]: expected.response,
-    },
-    checkQuestions(questions.slice(1), interaction.slice(1)),
-  )
-}
-
-function expectQuestionToMatch(
+function checkQuestion(
   question: DistinctQuestion<any>,
   expected: TestCliPrompt,
-) {
+): any {
   switch (expected.kind) {
     case "input":
       expect(question.type).toEqual("input")
       expect(question.message).toEqual(expected.question)
-      break
+      return expected.response
     case "editor":
       expect(question.type).toEqual("editor")
       expect(question.message).toEqual(expected.question)
-      break
+      return expected.response
     case "list":
       expect(question.type).toEqual("list")
       // @ts-ignore: type of question is not inferred to be a list
       expect(question.choices).toContain(expected.response)
-      break
+      return expected.response
     default:
       throw new ExhaustiveSwitchError(expected)
   }

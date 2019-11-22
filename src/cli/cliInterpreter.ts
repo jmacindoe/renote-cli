@@ -20,8 +20,8 @@ async function interpreter(sut: CliComponent, next?: any) {
       await interpreter(sut)
       break
     case "prompt":
-      const newNext = await inquirer.prompt(operation.questions)
-      await interpreter(sut, newNext)
+      const { result } = await inquirer.prompt(operation.question)
+      await interpreter(sut, result)
       break
     default:
       throw new ExhaustiveSwitchError(operation)

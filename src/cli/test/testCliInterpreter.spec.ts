@@ -43,7 +43,7 @@ describe("testCliInterpreter", () => {
     }
     const promise2 = testCliInterpreter(sut2(), [])
     await expect(promise2).rejects.toMatchInlineSnapshot(
-      `[Error: Expected no further interaction but got: {"type":"input","name":"result","message":"prompt"}]`,
+      `[Error: Expected no further interaction but got: {"type":"prompt","question":{"type":"input","name":"result","message":"prompt"}}]`,
     )
   })
 
@@ -163,7 +163,7 @@ describe("testCliInterpreter", () => {
     }
     const promise = testCliInterpreter(sut(), [expectPrint("Q")])
     await expect(promise).rejects.toMatchInlineSnapshot(
-      `[Error: Got a question (Q) but expected {"type":"print","text":"Q"}]`,
+      `[Error: Got a prompt but expected {"type":"print","text":"Q"}]`,
     )
   })
 
@@ -185,20 +185,8 @@ describe("testCliInterpreter", () => {
       yield* print("Hi")
     }
     const promise = testCliInterpreter(sut(), [expectInput("Hi", "ans")])
-    await expect(promise).rejects.toMatchInlineSnapshot(`
-            [Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
-
-            [32m- Expected[39m
-            [31m+ Received[39m
-
-            [2m  Object {[22m
-            [32m-   "kind": "input",[39m
-            [32m-   "question": "Hi",[39m
-            [32m-   "response": "ans",[39m
-            [32m-   "type": "prompt",[39m
-            [31m+   "text": "Hi",[39m
-            [31m+   "type": "print",[39m
-            [2m  }[22m]
-          `)
+    await expect(promise).rejects.toMatchInlineSnapshot(
+      `[Error: Got a print but expected {"type":"prompt","kind":"input","question":"Hi","response":"ans"}]`,
+    )
   })
 })
