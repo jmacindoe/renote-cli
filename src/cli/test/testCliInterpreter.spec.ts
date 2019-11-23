@@ -146,7 +146,7 @@ describe("testCliInterpreter", () => {
       const answer = yield* listPrompt(["A", "B"])
       yield* print(answer)
     }
-    await testCliInterpreter(sut(), [expectList("A"), expectPrint("A")])
+    await testCliInterpreter(sut(), [expectList(null, "A"), expectPrint("A")])
   })
 
   it("returns the value for a list prompt with different values to names", async () => {
@@ -163,14 +163,14 @@ describe("testCliInterpreter", () => {
       ])
       yield* print(JSON.stringify(answer))
     }
-    await testCliInterpreter(sut(), [expectList("A"), expectPrint("1")])
+    await testCliInterpreter(sut(), [expectList(null, "A"), expectPrint("1")])
   })
 
   it("fails if list prompt doesn't contain value", async () => {
     const sut: () => CliComponent = async function*() {
       yield* listPrompt(["A", "B"])
     }
-    const promise = testCliInterpreter(sut(), [expectList("C")])
+    const promise = testCliInterpreter(sut(), [expectList(null, "C")])
     await expect(promise).rejects.toMatchInlineSnapshot(
       `[Error: Expected choice (C) not in list: ["A","B"]]`,
     )
@@ -185,10 +185,57 @@ describe("testCliInterpreter", () => {
         },
       ])
     }
-    const promise = testCliInterpreter(sut(), [expectList("val")])
+    const promise = testCliInterpreter(sut(), [expectList(null, "val")])
     await expect(promise).rejects.toMatchInlineSnapshot(
       `[Error: Expected choice (val) not in list: [{"name":"A","value":"val"}]]`,
     )
+  })
+
+  it("fails if list prompt doesn't have all the expected options", async () => {
+    const sut: () => CliComponent = async function*() {
+      yield* listPrompt(["A", "B"])
+    }
+    const promise = testCliInterpreter(sut(), [
+      expectList(["A", "B", "C"], "A"),
+    ])
+    await expect(promise).rejects.toMatchInlineSnapshot(`
+            [Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
+
+            [32m- Expected[39m
+            [31m+ Received[39m
+
+            [2m  Array [[22m
+            [2m    "A",[22m
+            [2m    "B",[22m
+            [32m-   "C",[39m
+            [2m  ][22m]
+          `)
+  })
+
+  it("passes if list prompt has expected options", async () => {
+    const sut: () => CliComponent = async function*() {
+      yield* listPrompt(["A", "B"])
+    }
+    await testCliInterpreter(sut(), [expectList(["A", "B"], "A")])
+  })
+
+  it("fails if list prompt has additional options", async () => {
+    const sut: () => CliComponent = async function*() {
+      yield* listPrompt(["A", "B", "C"])
+    }
+    const promise = testCliInterpreter(sut(), [expectList(["A", "B"], "A")])
+    await expect(promise).rejects.toMatchInlineSnapshot(`
+            [Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
+
+            [32m- Expected[39m
+            [31m+ Received[39m
+
+            [2m  Array [[22m
+            [2m    "A",[22m
+            [2m    "B",[22m
+            [31m+   "C",[39m
+            [2m  ][22m]
+          `)
   })
 
   it("fails if print was expected but got a prompt", async () => {

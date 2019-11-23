@@ -29,7 +29,7 @@ export interface TestCliList {
   type: "prompt"
   kind: "list"
   choice: string
-  options?: string[]
+  options: string[] | null
 }
 
 export interface TestCliPrint {
@@ -114,7 +114,7 @@ function checkListQuestion(question: ListQuestion, expected: TestCliList) {
   // @ts-ignore: our type is a simplification of the real type
   const rawChoices: ReadonlyArray<NameValue<any> | string> = question.choices
   const choices = rawChoices.map(asNameValue)
-  // TODO: if options are given in expect, verify they match
+  checkListOptionsMatch(choices.map(c => c.name), expected.options)
   const match = choices.find(c => c.name === expected.choice)
   if (match) {
     return match.value
@@ -134,4 +134,11 @@ function asNameValue(choice: string | NameValue<any>): NameValue<any> {
     }
   }
   return choice
+}
+
+function checkListOptionsMatch(actual: string[], expected: string[] | null) {
+  if (!expected) {
+    return // We explicitly don't care about checking this
+  }
+  expect(actual).toEqual(expected)
 }

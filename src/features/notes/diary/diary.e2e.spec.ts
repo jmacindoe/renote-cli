@@ -30,7 +30,7 @@ afterEach(async () => {
 describe("diary e2e", () => {
   it("creates and reviews a note", async () => {
     await testCliInterpreter(addNote(), [
-      expectList("Diary"),
+      expectList(null, "Diary"),
       expectEditor("Diary prompt", "What is up?"),
       expectInput("Show in how many days from now?", "3"),
     ])

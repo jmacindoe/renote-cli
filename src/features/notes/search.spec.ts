@@ -21,17 +21,17 @@ afterEach(async () => {
   await db.deleteAllData()
 })
 
-describe("review", () => {
-  it("reviews the due notes", async () => {
+describe("search", () => {
+  it("finds a note", async () => {
     await testCliInterpreter(addNote(), [
-      expectList("Text"),
+      expectList(null, "Text"),
       expectInput("Title", "doc 1"),
       expectEditor("Body", "Body 1"),
       expectInput("Show in how many days from now?", "3"),
     ])
 
     await testCliInterpreter(addNote(), [
-      expectList("Text"),
+      expectList(null, "Text"),
       expectInput("Title", "doc 2"),
       expectEditor("Body", "Body 2"),
       expectInput("Show in how many days from now?", "3"),
