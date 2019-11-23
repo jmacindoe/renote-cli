@@ -1,9 +1,10 @@
 import { TestCliList } from "./testCliInterpreter"
 
-export function expectList(response: string): TestCliList {
+export function expectList(choice: string, options?: string[]): TestCliList {
   return {
     type: "prompt",
     kind: "list",
-    response,
+    choice,
+    options,
   }
 }

@@ -3,7 +3,12 @@ import { testCliInterpreter } from "./testCliInterpreter"
 import { print } from "../model/CliPrint"
 import { expectPrint } from "./expectPrint"
 import { anyFurtherInteraction } from "./anyFurtherInteraction"
-import { inputPrompt, editorPrompt, listPrompt } from "../model/CliPrompt"
+import {
+  inputPrompt,
+  editorPrompt,
+  listPrompt,
+  listPromptKV,
+} from "../model/CliPrompt"
 import { expectInput } from "./expectInput"
 import { expectEditor } from "./expectEditor"
 import { expectList } from "./expectList"
@@ -136,7 +141,7 @@ describe("testCliInterpreter", () => {
           `)
   })
 
-  it("passes if list prompt has provided value and uses that value", async () => {
+  it("passes if list prompt has provided value and then uses that value", async () => {
     const sut: () => CliComponent = async function*() {
       const answer = yield* listPrompt(["A", "B"])
       yield* print(answer)
@@ -144,17 +149,46 @@ describe("testCliInterpreter", () => {
     await testCliInterpreter(sut(), [expectList("A"), expectPrint("A")])
   })
 
+  it("returns the value for a list prompt with different values to names", async () => {
+    const sut: () => CliComponent = async function*() {
+      const answer = yield* listPromptKV([
+        {
+          name: "A",
+          value: 1,
+        },
+        {
+          name: "B",
+          value: 2,
+        },
+      ])
+      yield* print(JSON.stringify(answer))
+    }
+    await testCliInterpreter(sut(), [expectList("A"), expectPrint("1")])
+  })
+
   it("fails if list prompt doesn't contain value", async () => {
     const sut: () => CliComponent = async function*() {
       yield* listPrompt(["A", "B"])
     }
     const promise = testCliInterpreter(sut(), [expectList("C")])
-    await expect(promise).rejects.toMatchInlineSnapshot(`
-            [Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+    await expect(promise).rejects.toMatchInlineSnapshot(
+      `[Error: Expected choice (C) not in list: ["A","B"]]`,
+    )
+  })
 
-            Expected value: [32m"C"[39m
-            Received array: [31m["A", "B"][39m]
-          `)
+  it("fails if list prompt doesn't contain value in pairs", async () => {
+    const sut: () => CliComponent = async function*() {
+      yield* listPromptKV([
+        {
+          name: "A",
+          value: "val",
+        },
+      ])
+    }
+    const promise = testCliInterpreter(sut(), [expectList("val")])
+    await expect(promise).rejects.toMatchInlineSnapshot(
+      `[Error: Expected choice (val) not in list: [{"name":"A","value":"val"}]]`,
+    )
   })
 
   it("fails if print was expected but got a prompt", async () => {

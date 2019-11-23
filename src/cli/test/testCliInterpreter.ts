@@ -1,7 +1,8 @@
-import { DistinctQuestion } from "inquirer"
+import { DistinctQuestion, ListQuestion } from "inquirer"
 import { assertDefined } from "../../error/assert"
 import { CliComponent } from "../model/CliComponent"
 import { ExhaustiveSwitchError } from "../../error/ExhaustiveSwitchError"
+import { NameValue } from "../model/CliPrompt"
 
 export type TestCliInteraction =
   | TestCliPrint
@@ -27,7 +28,8 @@ export interface TestCliEditor {
 export interface TestCliList {
   type: "prompt"
   kind: "list"
-  response: string
+  choice: string
+  options?: string[]
 }
 
 export interface TestCliPrint {
@@ -102,10 +104,34 @@ function checkQuestion(
       return expected.response
     case "list":
       expect(question.type).toEqual("list")
-      // @ts-ignore: type of question is not inferred to be a list
-      expect(question.choices).toContain(expected.response)
-      return expected.response
+      return checkListQuestion(question as ListQuestion, expected)
     default:
       throw new ExhaustiveSwitchError(expected)
   }
+}
+
+function checkListQuestion(question: ListQuestion, expected: TestCliList) {
+  // @ts-ignore: our type is a simplification of the real type
+  const rawChoices: ReadonlyArray<NameValue<any> | string> = question.choices
+  const choices = rawChoices.map(asNameValue)
+  // TODO: if options are given in expect, verify they match
+  const match = choices.find(c => c.name === expected.choice)
+  if (match) {
+    return match.value
+  } else {
+    throw new Error(
+      `Expected choice (${expected.choice}) not in list: ` +
+        JSON.stringify(rawChoices),
+    )
+  }
+}
+
+function asNameValue(choice: string | NameValue<any>): NameValue<any> {
+  if (typeof choice === "string") {
+    return {
+      name: choice,
+      value: choice,
+    }
+  }
+  return choice
 }
