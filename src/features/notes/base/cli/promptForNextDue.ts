@@ -40,10 +40,10 @@ export async function* updateDueDate(
   }
 
   const previousNDays = previousDueData.algorithmData
-  const input = yield* inputPrompt(
-    `Show in how many days from now? [${previousNDays}]`,
+  const nextDueInNDays = yield* inputPrompt(
+    `Show in how many days from now?`,
+    previousNDays,
   )
-  const nextDueInNDays = input === "" ? previousNDays : input
   const nextDue = nextDueFromString(nextDueInNDays)
 
   if (!nextDue) {
