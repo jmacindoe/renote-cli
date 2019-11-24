@@ -2,6 +2,7 @@ import { BackendDb } from "./db/BackendDb"
 import { cliInterpreter } from "./cli/cliInterpreter"
 import { mainMenu } from "./features/notes/menu"
 import { addNote } from "./features/notes/add"
+import { Errors } from "./error/Errors"
 
 export type RenoteCommand = "add" | "review"
 
@@ -20,5 +21,4 @@ async function tearDown() {
   await BackendDb.tearDown()
 }
 
-// tslint:disable-next-line: no-floating-promises
-main()
+main().catch(e => Errors.recordError(e))
