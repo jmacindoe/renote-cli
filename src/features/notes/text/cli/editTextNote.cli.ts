@@ -4,7 +4,6 @@ import { TextNote } from "../model/TextNote"
 import { updateTextNoteUseCase } from "../usecase/updateTextNoteUseCase"
 
 export async function* editTextNoteCli(note: TextNote): CliComponent {
-  const title = yield* inputPrompt("Title", note.title)
   const body = yield* editorPrompt("Body", note.body)
-  await updateTextNoteUseCase(note._id, title, body)
+  await updateTextNoteUseCase(note._id, body)
 }

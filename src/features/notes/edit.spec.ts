@@ -39,17 +39,15 @@ describe("edit", () => {
   it("edits a text note", async () => {
     await testCliInterpreter(addNote(), [
       expectList(null, "Text"),
-      expectInput("Title", "doc 1"),
-      expectEditor("Body", "Body 1"),
+      expectEditor("Body", "doc 1"),
       expectInput("Show in how many days from now?", "3"),
     ])
 
     await testCliInterpreter(editNote(), [
       expectInput("Note search", "1"),
       expectPrint("\nFound 1 results\n"),
-      expectList(["New search", "doc 1|Body 1"], "doc 1|Body 1"),
-      expectInput("Title [doc 1]", "doc 2"),
-      expectEditor("Body", "Body 2"),
+      expectList(["New search", "doc 1"], "doc 1"),
+      expectEditor("Body", "doc 2"),
     ])
 
     // Assert the original text is gone from the DB
@@ -61,7 +59,7 @@ describe("edit", () => {
     // Assert the new text is present in the DB
     await testCliInterpreter(search(), [
       expectInput("Query", "2"),
-      expectPrint("doc 2|Body 2"),
+      expectPrint("doc 2"),
     ])
   })
 

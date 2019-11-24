@@ -8,7 +8,6 @@ import { decodeOrThrow } from "../../../error/decode"
 import { editTextNoteCli } from "./cli/editTextNote.cli"
 
 const TextNoteTypeData = t.type({
-  title: t.string,
   body: t.string,
 })
 
@@ -18,29 +17,27 @@ export const textNotePlugin = {
   createNote: createTextNoteCli,
   editNote: editTextNoteCli,
   reviewNote: reviewTextNoteCli,
-  serializeTypeData(title: string, body: string): string {
+  serializeTypeData(body: string): string {
     return JSON.stringify({
-      title,
       body,
     })
   },
   deserialize(doc: DbNote): TextNote {
     assert(doc.type === textNoteType)
     const { _id, createdAt, due } = deserializeBaseNote(doc)
-    const { title, body } = decodeOrThrow(TextNoteTypeData, doc.typeData)
+    const { body } = decodeOrThrow(TextNoteTypeData, doc.typeData)
     return {
       type: textNoteType,
       _id,
-      title,
       body,
       createdAt,
       due,
     }
   },
-  searchText(title: string, body: string): string {
-    return title + " " + body
+  searchText(body: string): string {
+    return body
   },
   debugDescription(note: TextNote): string {
-    return note.title + "|" + note.body
+    return note.body
   },
 }

@@ -32,17 +32,17 @@ describe("review", () => {
   })
 
   it("reviews the due notes", async () => {
-    await createTextNoteUseCase("due yesterday", "body", {
+    await createTextNoteUseCase("due yesterday", {
       nextDue: new LocalDate(MockTime.initialMockedLocalDate - 1),
       algorithm: "NDays",
       algorithmData: "1",
     })
-    await createTextNoteUseCase("due today", "body", {
+    await createTextNoteUseCase("due today", {
       nextDue: new LocalDate(MockTime.initialMockedLocalDate),
       algorithm: "NDays",
       algorithmData: "1",
     })
-    await createTextNoteUseCase("not due yet", "body", {
+    await createTextNoteUseCase("not due yet", {
       nextDue: new LocalDate(MockTime.initialMockedLocalDate + 1),
       algorithm: "NDays",
       algorithmData: "1",
@@ -50,11 +50,9 @@ describe("review", () => {
 
     await testCliInterpreter(doReview(), [
       expectPrint("\nDue today: 2\n"),
-      expectPrint("# due yesterday\n"),
-      expectPrint("body"),
+      expectPrint("due yesterday"),
       expectInput("Show in how many days from now? [1]", "1"),
-      expectPrint("# due today\n"),
-      expectPrint("body"),
+      expectPrint("due today"),
       expectInput("Show in how many days from now? [1]", "2"),
     ])
 
@@ -62,11 +60,9 @@ describe("review", () => {
 
     await testCliInterpreter(doReview(), [
       expectPrint("\nDue today: 2\n"),
-      expectPrint("# due yesterday\n"),
-      expectPrint("body"),
+      expectPrint("due yesterday"),
       expectInput("Show in how many days from now? [1]", "1"),
-      expectPrint("# not due yet\n"),
-      expectPrint("body"),
+      expectPrint("not due yet"),
       expectInput("Show in how many days from now? [1]", "2"),
     ])
   })

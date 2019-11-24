@@ -21,7 +21,7 @@ afterEach(async () => {
 describe("getDueNotesUseCase", () => {
   it("gets due notes", async () => {
     const today = new LocalDate(1000)
-    await createTextNoteUseCase("title", "body", {
+    await createTextNoteUseCase("body", {
       nextDue: new LocalDate(1000),
       algorithm: "alg",
       algorithmData: "whatever",
@@ -51,7 +51,6 @@ describe("getDueNotesUseCase", () => {
             "daysSince2000": 1000,
           },
         },
-        "title": "title",
         "type": "TextNote",
       }
     `,
@@ -78,7 +77,7 @@ describe("getDueNotesUseCase", () => {
 
   it("doesn't get notes not yet due", async () => {
     const today = new LocalDate(1000)
-    await createTextNoteUseCase("title", "body", {
+    await createTextNoteUseCase("body", {
       nextDue: new LocalDate(1001),
       algorithm: "alg",
       algorithmData: "whatever",

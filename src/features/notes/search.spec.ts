@@ -25,21 +25,19 @@ describe("search", () => {
   it("finds a note", async () => {
     await testCliInterpreter(addNote(), [
       expectList(null, "Text"),
-      expectInput("Title", "doc 1"),
-      expectEditor("Body", "Body 1"),
+      expectEditor("Body", "doc 1"),
       expectInput("Show in how many days from now?", "3"),
     ])
 
     await testCliInterpreter(addNote(), [
       expectList(null, "Text"),
-      expectInput("Title", "doc 2"),
-      expectEditor("Body", "Body 2"),
+      expectEditor("Body", "doc 2"),
       expectInput("Show in how many days from now?", "3"),
     ])
 
     await testCliInterpreter(search(), [
       expectInput("Query", "1"),
-      expectPrint("doc 1|Body 1"),
+      expectPrint("doc 1"),
     ])
   })
 

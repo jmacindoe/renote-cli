@@ -4,8 +4,7 @@ import { createTextNoteUseCase } from "../usecase/createTextNoteUseCase"
 import { inputPrompt, editorPrompt } from "../../../../cli/model/CliPrompt"
 
 export async function* createTextNoteCli(): CliComponent {
-  const title = yield* inputPrompt("Title")
   const body = yield* editorPrompt("Body")
   const due = yield* promptForNextDue()
-  await createTextNoteUseCase(title, body, due)
+  await createTextNoteUseCase(body, due)
 }

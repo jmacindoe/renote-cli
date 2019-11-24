@@ -4,11 +4,10 @@ import { createNoteUseCase } from "../../base/usecase/createNoteUseCase"
 import { textNotePlugin } from "../textNotePlugin"
 
 export async function createTextNoteUseCase(
-  title: string,
   body: string,
   due: DueData,
 ): Promise<void> {
-  const typeData = textNotePlugin.serializeTypeData(title, body)
-  const searchText = textNotePlugin.searchText(title, body)
+  const typeData = textNotePlugin.serializeTypeData(body)
+  const searchText = textNotePlugin.searchText(body)
   return createNoteUseCase(textNoteType, typeData, searchText, due)
 }
