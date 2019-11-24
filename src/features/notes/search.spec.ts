@@ -42,4 +42,11 @@ describe("search", () => {
       expectPrint("doc 1|Body 1"),
     ])
   })
+
+  it("informs user if no search results", async () => {
+    await testCliInterpreter(search(), [
+      expectInput("Query", "1"),
+      expectPrint("No results"),
+    ])
+  })
 })

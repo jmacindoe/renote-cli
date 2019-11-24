@@ -53,7 +53,10 @@ describe("edit", () => {
     ])
 
     // Assert the original text is gone from the DB
-    await testCliInterpreter(search(), [expectInput("Query", "1")])
+    await testCliInterpreter(search(), [
+      expectInput("Query", "1"),
+      expectPrint("No results"),
+    ])
 
     // Assert the new text is present in the DB
     await testCliInterpreter(search(), [
@@ -77,7 +80,10 @@ describe("edit", () => {
     ])
 
     // Assert the original text is gone from the DB
-    await testCliInterpreter(search(), [expectInput("Query", "Q")])
+    await testCliInterpreter(search(), [
+      expectInput("Query", "Q"),
+      expectPrint("No results"),
+    ])
 
     // Assert the new text is present in the DB
     await testCliInterpreter(search(), [
