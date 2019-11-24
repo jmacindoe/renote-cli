@@ -5,6 +5,7 @@ import { deserializeBaseNote, DbNote } from "../base/db/NoteDb"
 import { assert } from "../../../error/assert"
 import { decodeOrThrow } from "../../../error/decode"
 import * as t from "io-ts"
+import { editDiaryNote } from "./cli/editDiaryNote.cli"
 
 const DiaryNoteTypeData = t.type({
   prompt: t.string,
@@ -14,6 +15,7 @@ export const diaryNotePlugin = {
   type: diaryNoteType,
   uiName: "Diary",
   createNote: createDiaryNote,
+  editNote: editDiaryNote,
   reviewNote: reviewDiaryNote,
   serializeTypeData(prompt: string): string {
     return JSON.stringify({

@@ -1,15 +1,6 @@
-import { NoteDb } from "../db/NoteDb"
 import { DueData } from "../model/DueData"
+import { updateNoteUseCase } from "./updateNoteUseCase"
 
-export async function updateDueDateUseCase(_id: any, newDue: DueData) {
-  await NoteDb.updateOne(
-    { _id },
-    {
-      $set: {
-        nextDue: newDue.nextDue.daysSince1Jan2000(),
-        dueAlgorithm: newDue.algorithm,
-        dueAlgorithmData: newDue.algorithmData,
-      },
-    },
-  ).exec()
+export async function updateDueDateUseCase(_id: any, due: DueData) {
+  await updateNoteUseCase(_id, { due })
 }

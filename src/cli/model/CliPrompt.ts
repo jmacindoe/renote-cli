@@ -13,12 +13,16 @@ function* prompt(question: DistinctQuestion): Generator<CliPrompt, any> {
   }
 }
 
-export async function* inputPrompt(message: string): CliComponent<string> {
-  return yield* prompt({
+export async function* inputPrompt(
+  message: string,
+  prefill?: string,
+): CliComponent<string> {
+  const answer = yield* prompt({
     type: "input",
     name: "result",
-    message,
+    message: prefill ? `${message} [${prefill}]` : message,
   })
+  return prefill && answer === "" ? prefill : answer
 }
 
 export async function* editorPrompt(

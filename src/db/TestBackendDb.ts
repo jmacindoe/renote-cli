@@ -30,7 +30,7 @@ export class TestBackendDb {
         collections
           .map(({ name }) => name)
           .map(collection =>
-            mongoose.connection.db.collection(collection).drop(),
+            mongoose.connection.db.collection(collection).deleteMany({}),
           ),
       )
     }
