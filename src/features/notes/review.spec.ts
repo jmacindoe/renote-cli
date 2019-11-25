@@ -50,20 +50,20 @@ describe("review", () => {
 
     await testCliInterpreter(doReview(), [
       expectPrint("\nDue today: 2\n"),
-      expectPrint("due yesterday"),
-      expectInput("Show in how many days from now? [1]", "1"),
       expectPrint("due today"),
       expectInput("Show in how many days from now? [1]", "2"),
+      expectPrint("due yesterday"),
+      expectInput("Show in how many days from now? [1]", "1"),
     ])
 
     MockTime.tickDays(1)
 
     await testCliInterpreter(doReview(), [
       expectPrint("\nDue today: 2\n"),
-      expectPrint("due yesterday"),
-      expectInput("Show in how many days from now? [1]", "1"),
       expectPrint("not due yet"),
       expectInput("Show in how many days from now? [1]", "2"),
+      expectPrint("due yesterday"),
+      expectInput("Show in how many days from now? [1]", "1"),
     ])
   })
 })

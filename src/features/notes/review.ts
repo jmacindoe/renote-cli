@@ -19,7 +19,8 @@ export async function* doReview(): CliComponent {
 }
 
 async function* reviewNotes(notes: Note[]): CliComponent {
-  const shuffled = shuffle(notes, "seed")
+  // This seed gives orders: [1], [2, 1], [3, 2, 1], [4, 2, 3, 1], [5, 2, 3, 4, 1]
+  const shuffled = shuffle(notes, "fixed seed 1234")
   for (const note of shuffled) {
     yield* reviewNote(note)
     const due = yield* promptForNextDue(note.due)
