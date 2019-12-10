@@ -6,10 +6,7 @@ export async function startDocker(containerId: string) {
   const alreadyStarted = await containerIsStarted(container)
   if (!alreadyStarted) {
     await startContainer(container)
-    // dockerode holds onto the socket, causing mongoose to fail. Not sure how to avoid this, so get user to re-run :'(
-    // tslint:disable-next-line: no-console
-    console.log("Started docker. Please run again.")
-    process.exit(1)
+    await sleep(1000) // Wait for mongo to start up
   }
 }
 
@@ -44,4 +41,8 @@ async function startContainer(container: Docker.Container) {
       resolve(data)
     })
   })
+}
+
+function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
