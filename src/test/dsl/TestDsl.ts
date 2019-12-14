@@ -11,6 +11,7 @@ import { expectPrint } from "../../cli/test/expectPrint"
 import { expectEditor } from "../../cli/test/expectEditor"
 import { AddNoteTestDsl } from "./AddNoteTestDsl"
 import { TestDslGiven } from "./TestDslGiven"
+import { anyFurtherInteraction } from "../../cli/test/anyFurtherInteraction"
 
 export const TestDsl = {
   given: TestDslGiven,
@@ -24,6 +25,7 @@ export const TestDsl = {
   expectPrint,
   expectList,
   expectEditor,
+  anyFurtherInteraction,
 }
 
 async function interaction<TReturn>(

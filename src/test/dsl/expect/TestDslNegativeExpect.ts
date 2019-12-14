@@ -1,18 +1,28 @@
 import { TestDslExpect } from "./TestDslExpect"
-import { testCliInterpreter } from "../../../cli/test/testCliInterpreter"
-import { search } from "../../../features/notes/search"
-import { expectInput } from "../../../cli/test/expectInput"
-import { expectPrint } from "../../../cli/test/expectPrint"
+import { NoteDb } from "../../../features/notes/base/db/NoteDb"
 
 export class TestDslNegativeExpect extends TestDslExpect {
   constructor() {
     super(true)
   }
 
+  public async textNoteExists(body: string) {
+    const typeData = JSON.stringify({
+      body,
+    })
+    const docs = await NoteDb.find({
+      typeData,
+    }).exec()
+    expect(docs.length).toEqual(0)
+  }
+
   public async diaryNoteExists(prompt: string) {
-    await testCliInterpreter(search(), [
-      expectInput("Query", prompt),
-      expectPrint("No results"),
-    ])
+    const typeData = JSON.stringify({
+      prompt,
+    })
+    const docs = await NoteDb.find({
+      typeData,
+    }).exec()
+    expect(docs.length).toEqual(0)
   }
 }
