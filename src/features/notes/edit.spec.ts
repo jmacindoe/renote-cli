@@ -8,6 +8,7 @@ import { expectEditor } from "../../cli/test/expectEditor"
 import { search } from "./search"
 import { editNote } from "./edit"
 import { anyFurtherInteraction } from "../../cli/test/anyFurtherInteraction"
+import { TestDsl } from "../../test/dsl/TestDsl"
 
 const db = new TestBackendDb()
 
@@ -64,29 +65,17 @@ describe("edit", () => {
   })
 
   it("edits a diary note", async () => {
-    await testCliInterpreter(addNote(), [
-      expectList(null, "Diary"),
-      expectEditor("Diary prompt", "Q"),
-      expectInput("Show in how many days from now?", "1"),
-    ])
+    await TestDsl.given.aDiaryNote("Q", 1)
 
-    await testCliInterpreter(editNote(), [
-      expectInput("Note search", "Q"),
-      expectPrint("\nFound 1 results\n"),
-      expectList(["New search", "Q"], "Q"),
-      expectEditor("Diary prompt", "new"),
-    ])
+    await TestDsl.interaction(
+      TestDsl.mainMenu.editNote(),
+      TestDsl.expectInput("Note search", "Q"),
+      TestDsl.expectPrint("\nFound 1 results\n"),
+      TestDsl.expectList(["New search", "Q"], "Q"),
+      TestDsl.expectEditor("Diary prompt", "new"),
+    )
 
-    // Assert the original text is gone from the DB
-    await testCliInterpreter(search(), [
-      expectInput("Query", "Q"),
-      expectPrint("No results"),
-    ])
-
-    // Assert the new text is present in the DB
-    await testCliInterpreter(search(), [
-      expectInput("Query", "new"),
-      expectPrint("new"),
-    ])
+    await TestDsl.expect.not.diaryNoteExists("Q")
+    await TestDsl.expect.diaryNoteExists("new")
   })
 })
