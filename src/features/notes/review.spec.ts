@@ -1,11 +1,6 @@
 import { TestBackendDb } from "../../db/TestBackendDb"
-import { LocalDate } from "./base/model/LocalDate"
-import { createTextNoteUseCase } from "./text/usecase/createTextNoteUseCase"
-import { testCliInterpreter } from "../../cli/test/testCliInterpreter"
-import { doReview } from "./review"
-import { expectPrint } from "../../cli/test/expectPrint"
-import { expectInput } from "../../cli/test/expectInput"
 import { MockTime } from "../../test/MockTime"
+import { TestDsl } from "../../test/dsl/TestDsl"
 
 const db = new TestBackendDb()
 
@@ -28,42 +23,37 @@ afterEach(async () => {
 
 describe("review", () => {
   it("prints a message if there are no notes due", async () => {
-    await testCliInterpreter(doReview(), [expectPrint("Nothing due today")])
+    await TestDsl.interaction(
+      TestDsl.mainMenu.review(),
+      TestDsl.expectPrint("Nothing due today"),
+    )
   })
 
   it("reviews the due notes", async () => {
-    await createTextNoteUseCase("due yesterday", {
-      nextDue: new LocalDate(MockTime.initialMockedLocalDate - 1),
-      algorithm: "NDays",
-      algorithmData: "1",
-    })
-    await createTextNoteUseCase("due today", {
-      nextDue: new LocalDate(MockTime.initialMockedLocalDate),
-      algorithm: "NDays",
-      algorithmData: "1",
-    })
-    await createTextNoteUseCase("not due yet", {
-      nextDue: new LocalDate(MockTime.initialMockedLocalDate + 1),
-      algorithm: "NDays",
-      algorithmData: "1",
-    })
+    await TestDsl.given.aTextNote("due in 1", 1)
+    await TestDsl.given.aTextNote("due in 2", 2)
+    await TestDsl.given.aTextNote("due in 3", 3)
 
-    await testCliInterpreter(doReview(), [
-      expectPrint("\nDue today: 2\n"),
-      expectPrint("due today"),
-      expectInput("Show in how many days from now? [1]", "2"),
-      expectPrint("due yesterday"),
-      expectInput("Show in how many days from now? [1]", "1"),
-    ])
+    MockTime.tickDays(2)
+
+    await TestDsl.interaction(
+      TestDsl.mainMenu.review(),
+      TestDsl.expectPrint("\nDue today: 2\n"),
+      TestDsl.expectPrint("due in 2"),
+      TestDsl.expectInput("Show in how many days from now? [2]", "1"),
+      TestDsl.expectPrint("due in 1"),
+      TestDsl.expectInput("Show in how many days from now? [1]", "2"),
+    )
 
     MockTime.tickDays(1)
 
-    await testCliInterpreter(doReview(), [
-      expectPrint("\nDue today: 2\n"),
-      expectPrint("not due yet"),
-      expectInput("Show in how many days from now? [1]", "2"),
-      expectPrint("due yesterday"),
-      expectInput("Show in how many days from now? [1]", "1"),
-    ])
+    await TestDsl.interaction(
+      TestDsl.mainMenu.review(),
+      TestDsl.expectPrint("\nDue today: 2\n"),
+      TestDsl.expectPrint("due in 3"),
+      TestDsl.expectInput("Show in how many days from now? [3]", "2"),
+      TestDsl.expectPrint("due in 2"),
+      TestDsl.expectInput("Show in how many days from now? [1]", "1"),
+    )
   })
 })

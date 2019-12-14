@@ -1,12 +1,6 @@
 import { TestBackendDb } from "../../../db/TestBackendDb"
-import { testCliInterpreter } from "../../../cli/test/testCliInterpreter"
-import { addNote } from "../add"
-import { expectList } from "../../../cli/test/expectList"
-import { expectEditor } from "../../../cli/test/expectEditor"
-import { expectInput } from "../../../cli/test/expectInput"
 import { MockTime } from "../../../test/MockTime"
-import { expectPrint } from "../../../cli/test/expectPrint"
-import { doReview } from "../review"
+import { TestDsl } from "../../../test/dsl/TestDsl"
 
 const db = new TestBackendDb()
 
@@ -29,19 +23,16 @@ afterEach(async () => {
 
 describe("diary e2e", () => {
   it("creates and reviews a note", async () => {
-    await testCliInterpreter(addNote(), [
-      expectList(null, "Diary"),
-      expectEditor("Diary prompt", "What is up?"),
-      expectInput("Show in how many days from now?", "3"),
-    ])
+    await TestDsl.given.aDiaryNote("What is up?", 3)
 
     MockTime.tickDays(3)
 
-    await testCliInterpreter(doReview(), [
-      expectPrint("\nDue today: 1\n"),
-      expectPrint("What is up?"),
-      expectEditor("Entry", "The sky"),
-      expectInput("Show in how many days from now? [3]", "1"),
-    ])
+    await TestDsl.interaction(
+      TestDsl.mainMenu.review(),
+      TestDsl.expectPrint("\nDue today: 1\n"),
+      TestDsl.expectPrint("What is up?"),
+      TestDsl.expectEditor("Entry", "The sky"),
+      TestDsl.expectInput("Show in how many days from now? [3]", "1"),
+    )
   })
 })

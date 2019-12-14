@@ -1,11 +1,5 @@
 import { TestBackendDb } from "../../db/TestBackendDb"
-import { testCliInterpreter } from "../../cli/test/testCliInterpreter"
-import { expectPrint } from "../../cli/test/expectPrint"
-import { expectInput } from "../../cli/test/expectInput"
-import { addNote } from "./add"
-import { expectList } from "../../cli/test/expectList"
-import { expectEditor } from "../../cli/test/expectEditor"
-import { search } from "./search"
+import { TestDsl } from "../../test/dsl/TestDsl"
 
 const db = new TestBackendDb()
 
@@ -23,28 +17,21 @@ afterEach(async () => {
 
 describe("search", () => {
   it("finds a note", async () => {
-    await testCliInterpreter(addNote(), [
-      expectList(null, "Text"),
-      expectEditor("Body", "doc 1"),
-      expectInput("Show in how many days from now?", "3"),
-    ])
+    await TestDsl.given.aTextNote("doc 1", 3)
+    await TestDsl.given.aTextNote("doc 2", 3)
 
-    await testCliInterpreter(addNote(), [
-      expectList(null, "Text"),
-      expectEditor("Body", "doc 2"),
-      expectInput("Show in how many days from now?", "3"),
-    ])
-
-    await testCliInterpreter(search(), [
-      expectInput("Query", "1"),
-      expectPrint("doc 1"),
-    ])
+    await TestDsl.interaction(
+      TestDsl.mainMenu.search(),
+      TestDsl.expectInput("Query", "1"),
+      TestDsl.expectPrint("doc 1"),
+    )
   })
 
   it("informs user if no search results", async () => {
-    await testCliInterpreter(search(), [
-      expectInput("Query", "1"),
-      expectPrint("No results"),
-    ])
+    await TestDsl.interaction(
+      TestDsl.mainMenu.search(),
+      TestDsl.expectInput("Query", "1"),
+      TestDsl.expectPrint("No results"),
+    )
   })
 })
