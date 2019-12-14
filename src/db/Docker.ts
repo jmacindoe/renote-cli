@@ -6,7 +6,7 @@ export async function startDocker(containerId: string) {
   const alreadyStarted = await containerIsStarted(container)
   if (!alreadyStarted) {
     await startContainer(container)
-    await sleep(1000) // Wait for mongo to start up
+    await sleep(1500) // Wait for mongo to start up
   }
 }
 
