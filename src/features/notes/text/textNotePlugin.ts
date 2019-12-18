@@ -37,7 +37,10 @@ export const textNotePlugin = {
   searchText(body: string): string {
     return body
   },
-  debugDescription(note: TextNote): string {
+  asText(note: TextNote): string {
     return note.body
+  },
+  asShortText(note: TextNote): string {
+    return note.body.replace(/\n/g, " ").slice(0, 200)
   },
 }

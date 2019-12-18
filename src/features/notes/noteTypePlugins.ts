@@ -34,9 +34,14 @@ class NotePlugins {
     return docs.map(this.deserialize.bind(this))
   }
 
-  public debugDescription(note: Note): string {
+  public asText(note: Note): string {
     const plugin = this.getByType(note.type)
-    return plugin.debugDescription(note)
+    return plugin.asText(note)
+  }
+
+  public asShortText(note: Note): string {
+    const plugin = this.getByType(note.type)
+    return plugin.asShortText(note)
   }
 }
 

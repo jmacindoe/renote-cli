@@ -19,9 +19,7 @@ async function* findNote(): CliComponent<Note> {
   yield* print(`\nFound ${results.length} results\n`)
 
   const choices = results.map((result, index) => {
-    const plugin = noteTypePlugins.getByType(result.type)
-    // TODO: use some sort of UI representation instead
-    const name = plugin.debugDescription(result).slice(0, 100)
+    const name = noteTypePlugins.asShortText(result)
     return {
       name,
       value: index,
