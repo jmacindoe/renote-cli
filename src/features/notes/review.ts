@@ -7,6 +7,8 @@ import { noteTypePlugins } from "./noteTypePlugins"
 import { print } from "../../cli/model/CliPrint"
 // @ts-ignore
 import shuffle from "knuth-shuffle-seeded"
+import { listPrompt } from "../../cli/model/CliPrompt"
+import { deleteNoteUseCase } from "./base/usecase/deleteNoteUseCase"
 
 export async function* doReview(): CliComponent {
   const notes = await getDueNotesUseCase()
@@ -23,12 +25,32 @@ async function* reviewNotes(notes: Note[]): CliComponent {
   const shuffled = shuffle(notes, "fixed seed 1234")
   for (const note of shuffled) {
     yield* reviewNote(note)
-    const due = yield* promptForNextDue(note.due)
-    await updateDueDateUseCase(note._id, due)
+    yield* nextDuePrompt(note)
   }
 }
 
 async function* reviewNote(note: Note): CliComponent {
   const plugin = noteTypePlugins.getByType(note.type)
   yield* plugin.reviewNote(note)
+}
+
+async function* nextDuePrompt(note: Note): CliComponent {
+  const nextDue = yield* promptForNextDue(note.due)
+  if (nextDue === "menu-requested") {
+    yield* menu(note)
+  } else {
+    await updateDueDateUseCase(note._id, nextDue)
+  }
+}
+
+async function* menu(note: Note): CliComponent {
+  const op = yield* listPrompt(["Edit", "Delete"])
+
+  if (op === "Edit") {
+    const plugin = noteTypePlugins.getByType(note.type)
+    yield* plugin.editNote(note)
+    yield* nextDuePrompt(note)
+  } else if (op === "Delete") {
+    await deleteNoteUseCase(note._id)
+  }
 }

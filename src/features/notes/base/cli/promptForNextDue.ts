@@ -5,23 +5,12 @@ import { DueData } from "../model/DueData"
 
 const nDaysAlgorithm = "NDays"
 
-export async function* promptForNextDue(
-  // Do not pass if creating a new note
-  previousDueData?: DueData,
-): CliComponent<DueData> {
-  if (!previousDueData) {
-    return yield* firstTimePrompt()
-  } else {
-    return yield* updateDueDate(previousDueData)
-  }
-}
-
-export async function* firstTimePrompt(): CliComponent<DueData> {
+export async function* promptForFirstDue(): CliComponent<DueData> {
   const nextDueInNDays = yield* inputPrompt("Show in how many days from now?")
   const nextDue = nextDueFromString(nextDueInNDays)
 
   if (!nextDue) {
-    return yield* firstTimePrompt()
+    return yield* promptForFirstDue()
   }
 
   return {
@@ -31,29 +20,33 @@ export async function* firstTimePrompt(): CliComponent<DueData> {
   }
 }
 
-export async function* updateDueDate(
+export async function* promptForNextDue(
   previousDueData: DueData,
-): CliComponent<DueData> {
+): CliComponent<DueData | "menu-requested"> {
   // Currently only NDays is implemented
   if (previousDueData.algorithm !== nDaysAlgorithm) {
     throw new Error("Unknown due algorithm: " + previousDueData.algorithmData)
   }
 
   const previousNDays = previousDueData.algorithmData
-  const nextDueInNDays = yield* inputPrompt(
+  const answer = yield* inputPrompt(
     `Show in how many days from now?`,
     previousNDays,
   )
-  const nextDue = nextDueFromString(nextDueInNDays)
 
+  if (answer === "m") {
+    return "menu-requested"
+  }
+
+  const nextDue = nextDueFromString(answer)
   if (!nextDue) {
-    return yield* updateDueDate(previousDueData)
+    return yield* promptForNextDue(previousDueData)
   }
 
   return {
     nextDue,
     algorithm: nDaysAlgorithm,
-    algorithmData: nextDueInNDays,
+    algorithmData: answer,
   }
 }
 
