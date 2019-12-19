@@ -42,6 +42,7 @@ export async function* listPrompt(choices: string[]): CliComponent<string> {
   return yield* prompt({
     type: "list",
     name: "result",
+    message: "Menu",
     choices,
   })
 }
@@ -57,6 +58,7 @@ export async function* listPromptKV<T>(
   return yield* prompt({
     type: "list",
     name: "result",
+    message: "Menu",
     choices,
   })
 }
