@@ -1,11 +1,12 @@
 import { testCliInterpreter } from "../../../../cli/test/testCliInterpreter"
-import { promptForNextDue, promptForFirstDue } from "./promptForNextDue"
+import {
+  promptForNextDue,
+  promptForFirstDue,
+  promptForRescheduledNextDue,
+} from "./promptForNextDue"
 import { expectInput } from "../../../../cli/test/expectInput"
 import { MockTime } from "../../../../test/MockTime"
 import { LocalDate } from "../model/LocalDate"
-import { CliComponent } from "../../../../cli/model/CliComponent"
-import { print } from "../../../../cli/model/CliPrint"
-import { expectPrint } from "../../../../cli/test/expectPrint"
 
 beforeEach(() => {
   MockTime.install()
@@ -69,7 +70,7 @@ describe("promptForNextDue", () => {
     `)
   })
 
-  it("Uses new nDays during review", async () => {
+  it("returns user answer during review", async () => {
     const actual = await testCliInterpreter(promptForNextDue(previous), [
       expectInput("Show in how many days from now? [5]", "7"),
     ])
@@ -129,5 +130,50 @@ describe("promptForNextDue", () => {
       expectInput("Show in how many days from now? [5]", "m"),
     ])
     expect(actual).toEqual("menu-requested")
+  })
+
+  describe("reschedule", () => {
+    it("repeats question when asking for next due on invalid input", async () => {
+      const actual = await testCliInterpreter(
+        promptForRescheduledNextDue(previous),
+        [
+          expectInput("Next show in how many days?", "m"),
+          expectInput("Next show in how many days?", ""),
+          expectInput("Next show in how many days?", "3"),
+          expectInput("Then show every n days: [5]", "4"),
+        ],
+      )
+
+      expect(actual).toMatchInlineSnapshot(`
+        Object {
+          "algorithm": "NDays",
+          "algorithmData": "4",
+          "nextDue": LocalDate {
+            "daysSince2000": 3656,
+          },
+        }
+      `)
+    })
+
+    it("repeats question when asking for subsequent repetition rate on invalid input", async () => {
+      const actual = await testCliInterpreter(
+        promptForRescheduledNextDue(previous),
+        [
+          expectInput("Next show in how many days?", "2"),
+          expectInput("Then show every n days: [5]", "m"),
+          expectInput("Then show every n days: [5]", "6"),
+        ],
+      )
+
+      expect(actual).toMatchInlineSnapshot(`
+        Object {
+          "algorithm": "NDays",
+          "algorithmData": "6",
+          "nextDue": LocalDate {
+            "daysSince2000": 3655,
+          },
+        }
+      `)
+    })
   })
 })

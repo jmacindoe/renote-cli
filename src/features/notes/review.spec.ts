@@ -87,4 +87,42 @@ describe("review", () => {
     await TestDsl.expect.not.textNoteExists("the note")
     await TestDsl.expect.textNoteExists("edited")
   })
+
+  it("allows a note to be rescheduled", async () => {
+    await TestDsl.given.aTextNote("the note", 0)
+
+    await TestDsl.interaction(
+      TestDsl.mainMenu.review(),
+      TestDsl.reviewNote.dueToday(1),
+      TestDsl.expectPrint("the note"),
+      TestDsl.reviewNote.showIn({ previous: 0, new: "m" }),
+      TestDsl.reviewNote.menu.reschedule(),
+      TestDsl.reviewNote.reschedule.nextShow(1),
+      TestDsl.reviewNote.reschedule.thenEvery({ previous: 0, new: 2 }),
+    )
+
+    MockTime.tickDays(1)
+
+    await TestDsl.expect.notesDueToday([
+      {
+        text: "the note",
+        previousDue: 2,
+        showInResponse: "",
+      },
+    ])
+
+    MockTime.tickDays(1)
+
+    await TestDsl.expect.noNotesDueToday()
+
+    MockTime.tickDays(1)
+
+    await TestDsl.expect.notesDueToday([
+      {
+        text: "the note",
+        previousDue: 2,
+        showInResponse: "",
+      },
+    ])
+  })
 })
