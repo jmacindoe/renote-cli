@@ -11,7 +11,7 @@ const MockTimeConstructor = () => {
       if (installed) {
         throw new Error("MockTime already installed!")
       }
-      MockDate.set("2010-01-01T00:00:00.000Z", -120)
+      MockDate.set("2008-03-19T00:00:00.000Z", -120)
       installed = true
     },
     reset() {
@@ -22,7 +22,7 @@ const MockTimeConstructor = () => {
       MockDate.reset()
       installed = false
     },
-    initialMockedLocalDate: 3653,
+    initialMockedLocalDate: 3000,
     tickDays(n: number) {
       MockDate.set(
         moment()

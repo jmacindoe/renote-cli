@@ -41,6 +41,6 @@ describe("createTextNote.cli", () => {
     expect(doc.type).toEqual("TextNote")
     expect(doc.typeData).toMatchInlineSnapshot(`"{\\"body\\":\\"The body\\"}"`)
     expect(doc.nextDue).toEqual(MockTime.initialMockedLocalDate + nextDue)
-    expect(doc.createdAt).toEqual("2010-01-01T11:00:00+02:00")
+    expect(doc.createdAt).toEqual("2008-03-19T11:00:00+02:00")
   })
 })

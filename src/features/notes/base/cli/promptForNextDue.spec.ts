@@ -32,7 +32,7 @@ describe("promptForNextDue", () => {
         "algorithm": "NDays",
         "algorithmData": "3",
         "nextDue": LocalDate {
-          "daysSince2000": 3656,
+          "daysSince2000": 3003,
         },
       }
     `)
@@ -47,7 +47,7 @@ describe("promptForNextDue", () => {
         "algorithm": "NDays",
         "algorithmData": "5",
         "nextDue": LocalDate {
-          "daysSince2000": 3658,
+          "daysSince2000": 3005,
         },
       }
     `)
@@ -64,7 +64,7 @@ describe("promptForNextDue", () => {
         "algorithm": "NDays",
         "algorithmData": "3",
         "nextDue": LocalDate {
-          "daysSince2000": 3656,
+          "daysSince2000": 3003,
         },
       }
     `)
@@ -79,7 +79,7 @@ describe("promptForNextDue", () => {
         "algorithm": "NDays",
         "algorithmData": "7",
         "nextDue": LocalDate {
-          "daysSince2000": 3660,
+          "daysSince2000": 3007,
         },
       }
     `)
@@ -95,7 +95,7 @@ describe("promptForNextDue", () => {
         "algorithm": "NDays",
         "algorithmData": "3",
         "nextDue": LocalDate {
-          "daysSince2000": 3656,
+          "daysSince2000": 3003,
         },
       }
     `)
@@ -111,7 +111,7 @@ describe("promptForNextDue", () => {
         "algorithm": "NDays",
         "algorithmData": "3",
         "nextDue": LocalDate {
-          "daysSince2000": 3656,
+          "daysSince2000": 3003,
         },
       }
     `)
@@ -149,7 +149,7 @@ describe("promptForNextDue", () => {
           "algorithm": "NDays",
           "algorithmData": "4",
           "nextDue": LocalDate {
-            "daysSince2000": 3656,
+            "daysSince2000": 3003,
           },
         }
       `)
