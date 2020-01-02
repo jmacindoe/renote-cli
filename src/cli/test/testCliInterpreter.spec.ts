@@ -243,9 +243,11 @@ describe("testCliInterpreter", () => {
       yield* inputPrompt("Q")
     }
     const promise = testCliInterpreter(sut(), [expectPrint("Q")])
-    await expect(promise).rejects.toMatchInlineSnapshot(
-      `[Error: Got a prompt but expected {"type":"print","text":"Q"}]`,
-    )
+    await expect(promise).rejects.toMatchInlineSnapshot(`
+            [Error: Got a prompt but expected print.
+            Actual: {"type":"prompt","question":{"type":"input","name":"result","message":"Q"}}
+            Expected: {"type":"print","text":"Q"}]
+          `)
   })
 
   it("fails if editor was expected but got input", async () => {
@@ -266,8 +268,10 @@ describe("testCliInterpreter", () => {
       yield* print("Hi")
     }
     const promise = testCliInterpreter(sut(), [expectInput("Hi", "ans")])
-    await expect(promise).rejects.toMatchInlineSnapshot(
-      `[Error: Got a print but expected {"type":"prompt","kind":"input","question":"Hi","response":"ans"}]`,
-    )
+    await expect(promise).rejects.toMatchInlineSnapshot(`
+            [Error: Got a print but expected prompt.
+            Actual: {"type":"print","text":"Hi"}
+            Expected: {"type":"prompt","kind":"input","question":"Hi","response":"ans"}]
+          `)
   })
 })

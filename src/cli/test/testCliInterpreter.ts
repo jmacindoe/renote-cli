@@ -69,8 +69,11 @@ export async function testCliInterpreter<TReturn = any>(
     )
 
     if (expected.type !== request.value.type) {
-      const json = JSON.stringify(expected)
-      throw new Error(`Got a ${request.value.type} but expected ${json}`)
+      const actualJson = JSON.stringify(request.value)
+      const expectedJson = JSON.stringify(expected)
+      throw new Error(
+        `Got a ${request.value.type} but expected ${expected.type}.\nActual: ${actualJson}\nExpected: ${expectedJson}`,
+      )
     }
 
     switch (request.value.type) {
