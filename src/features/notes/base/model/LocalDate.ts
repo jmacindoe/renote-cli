@@ -1,6 +1,10 @@
 import moment, { Moment } from "moment"
 
 export class LocalDate {
+  public static today(): LocalDate {
+    return new LocalDate()
+  }
+
   private daysSince2000: number
 
   /// from as a number is the number of days since Jan 1 2000. Given a Moment,
@@ -24,5 +28,13 @@ export class LocalDate {
 
   public minusDays(ndays: number) {
     return new LocalDate(this.daysSince2000 - ndays)
+  }
+
+  public isBefore(other: LocalDate): boolean {
+    return this.daysSince1Jan2000() < other.daysSince1Jan2000()
+  }
+
+  public equals(other: LocalDate): boolean {
+    return this.daysSince1Jan2000() === other.daysSince1Jan2000()
   }
 }

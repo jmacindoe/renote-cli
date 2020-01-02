@@ -42,6 +42,8 @@ describe("review", () => {
       TestDsl.expectPrint("due in 2"),
       TestDsl.reviewNote.showIn({ previous: 2, new: 1 }),
       TestDsl.expectPrint("due in 1"),
+      TestDsl.expectPrint("Note was due yesterday. Shows everyday."),
+      TestDsl.reviewNote.late.scheduleRelativeToToday(),
       TestDsl.reviewNote.showIn({ previous: 1, new: 2 }),
     )
 

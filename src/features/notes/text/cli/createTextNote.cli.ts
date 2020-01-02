@@ -1,5 +1,5 @@
 import { CliComponent } from "../../../../cli/model/CliComponent"
-import { promptForFirstDue } from "../../base/cli/promptForNextDue"
+import { promptForFirstDue } from "../../base/cli/promptForFirstDue"
 import { createTextNoteUseCase } from "../usecase/createTextNoteUseCase"
 import { editorPrompt } from "../../../../cli/model/CliPrompt"
 

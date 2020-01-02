@@ -2,10 +2,8 @@ import { Note } from "./base/model/Note"
 import { getDueNotesUseCase } from "./base/usecase/getDueNotesUseCase"
 import { updateDueDateUseCase } from "./base/usecase/updateDueDateUseCase"
 import { CliComponent } from "../../cli/model/CliComponent"
-import {
-  promptForNextDue,
-  promptForRescheduledNextDue,
-} from "./base/cli/promptForNextDue"
+import { promptForNextDue } from "./base/cli/promptForNextDue"
+import { promptForRescheduledDueData } from "./base/cli/promptForRescheduledDueDate"
 import { noteTypePlugins } from "./noteTypePlugins"
 import { print } from "../../cli/model/CliPrint"
 // @ts-ignore
@@ -54,7 +52,7 @@ async function* menu(note: Note): CliComponent {
     yield* plugin.editNote(note)
     yield* nextDuePrompt(note)
   } else if (op === "Reschedule") {
-    const nextDue = yield* promptForRescheduledNextDue(note.due)
+    const nextDue = yield* promptForRescheduledDueData(note.due)
     await updateDueDateUseCase(note._id, nextDue)
   } else if (op === "Delete") {
     await deleteNoteUseCase(note._id)

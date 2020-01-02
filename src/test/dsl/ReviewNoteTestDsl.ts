@@ -3,6 +3,18 @@ import { TestCliInteraction } from "../../cli/test/testCliInterpreter"
 
 const menuOptions = ["Edit", "Reschedule", "Delete"]
 
+const relativeToDueDate = "Schedule relative to due date"
+const relativeToToday = "Schedule relative to today"
+const customReschedule = "Custom reschedule"
+const menu = "Menu"
+
+const lateMenuOptions = [
+  relativeToDueDate,
+  relativeToToday,
+  customReschedule,
+  menu,
+]
+
 export const ReviewNoteTestDsl = {
   noneDue(): TestCliInteraction {
     return TestDsl.expectPrint("Nothing due today")
@@ -46,12 +58,27 @@ export const ReviewNoteTestDsl = {
 
     thenEvery(due: {
       previous: number
-      new: number | "m"
+      new: number | "m" | ""
     }): TestCliInteraction {
       return TestDsl.expectInput(
         `Then show every n days: [${due.previous}]`,
         due.new.toString(),
       )
+    },
+  },
+
+  late: {
+    scheduleRelativeToDueDate(): TestCliInteraction {
+      return TestDsl.expectList(lateMenuOptions, relativeToDueDate)
+    },
+    scheduleRelativeToToday(): TestCliInteraction {
+      return TestDsl.expectList(lateMenuOptions, relativeToToday)
+    },
+    customReschedule(): TestCliInteraction {
+      return TestDsl.expectList(lateMenuOptions, customReschedule)
+    },
+    menu(): TestCliInteraction {
+      return TestDsl.expectList(lateMenuOptions, menu)
     },
   },
 }

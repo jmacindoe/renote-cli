@@ -1,122 +1,91 @@
 import { CliComponent } from "../../../../cli/model/CliComponent"
-import { inputPrompt } from "../../../../cli/model/CliPrompt"
+import { listPrompt } from "../../../../cli/model/CliPrompt"
 import { LocalDate } from "../model/LocalDate"
 import { DueData } from "../model/DueData"
+import { print } from "../../../../cli/model/CliPrint"
+import { duePrompt, nDaysData } from "./duePrompt"
+import { promptForRescheduledDueData } from "./promptForRescheduledDueDate"
 
-const nDaysAlgorithm = "NDays"
-
-export async function* promptForFirstDue(): CliComponent<DueData> {
-  const answer = yield* prompt(
-    "without-menu",
-    "Show in how many days from now?",
-  )
-
-  return {
-    nextDue: answer.nextDue,
-    algorithm: nDaysAlgorithm,
-    algorithmData: answer.userAnswer,
-  }
-}
+const relativeToDueDate = "Schedule relative to due date"
+const relativeToToday = "Schedule relative to today"
+const customReschedule = "Custom reschedule"
+const menu = "Menu"
 
 export async function* promptForNextDue(
   previousDueData: DueData,
 ): CliComponent<DueData | "menu-requested"> {
-  const answer = yield* prompt(
-    "with-menu",
-    "Show in how many days from now?",
-    previousDueData,
-  )
+  if (previousDueData.nextDue.isBefore(LocalDate.today())) {
+    return yield* promptForNextDueWhenLate(previousDueData)
+  } else {
+    return yield* promptForNextDueWhenOnSchedule(previousDueData)
+  }
+}
+
+async function* promptForNextDueWhenOnSchedule(
+  previousDueData: DueData,
+): CliComponent<DueData | "menu-requested"> {
+  const answer = yield* duePrompt("with-menu", { previousDueData })
 
   if (answer === "menu-requested") {
     return "menu-requested"
   } else {
-    return {
-      nextDue: answer.nextDue,
-      algorithm: nDaysAlgorithm,
-      algorithmData: answer.userAnswer,
-    }
+    return nDaysData({ nextShow: answer })
   }
 }
 
-export async function* promptForRescheduledNextDue(
+async function* promptForNextDueWhenLate(
   previousDueData: DueData,
+): CliComponent<DueData | "menu-requested"> {
+  yield* print(describeWhenDue(previousDueData))
+
+  const lateMenuAnswer = yield* listPrompt([
+    relativeToDueDate,
+    relativeToToday,
+    customReschedule,
+    menu,
+  ])
+  switch (lateMenuAnswer) {
+    case relativeToDueDate:
+      return yield* latePrompt(previousDueData, {
+        relativeTo: previousDueData.nextDue,
+      })
+    case relativeToToday:
+      return yield* latePrompt(previousDueData, {
+        relativeTo: LocalDate.today(),
+      })
+    case customReschedule:
+      return yield* promptForRescheduledDueData(previousDueData)
+    case menu:
+      return "menu-requested"
+    default:
+      throw new Error("Unexpected option: " + lateMenuAnswer)
+  }
+}
+
+function describeWhenDue(previousDueData: DueData): string {
+  const dueNDaysAgo =
+    LocalDate.today().daysSince1Jan2000() -
+    previousDueData.nextDue.daysSince1Jan2000()
+  const dueString =
+    dueNDaysAgo === 1
+      ? "Note was due yesterday."
+      : `Note was due ${dueNDaysAgo} days ago.`
+
+  const showsEveryNDays = previousDueData.algorithmData
+  const showsString =
+    showsEveryNDays === "1"
+      ? "Shows everyday."
+      : `Shows every ${showsEveryNDays} days.`
+  return `${dueString} ${showsString}`
+}
+
+async function* latePrompt(
+  previousDueData: DueData,
+  args: {
+    relativeTo: LocalDate
+  },
 ): CliComponent<DueData> {
-  const nextShow = yield* prompt("without-menu", "Next show in how many days?")
-  const thenShow = yield* prompt(
-    "without-menu",
-    "Then show every n days:",
-    previousDueData,
-  )
-
-  return {
-    nextDue: nextShow.nextDue,
-    algorithm: nDaysAlgorithm,
-    algorithmData: thenShow.userAnswer,
-  }
-}
-
-interface PromptAnswer {
-  userAnswer: string
-  nextDue: LocalDate
-}
-
-function prompt(
-  withMenu: "with-menu",
-  promptText: string,
-  previousDueData?: DueData,
-): CliComponent<"menu-requested" | PromptAnswer>
-
-function prompt(
-  withMenu: "without-menu",
-  promptText: string,
-  previousDueData?: DueData,
-): CliComponent<PromptAnswer>
-
-function prompt(
-  withMenu: "with-menu" | "without-menu",
-  promptText: string,
-  previousDueData?: DueData,
-): CliComponent<"menu-requested" | PromptAnswer> {
-  // TS does not allow overloading async generator signatures, so we overload a standard function and then call the generator
-  return promptCli(withMenu, promptText, previousDueData)
-}
-
-async function* promptCli(
-  withMenu: "with-menu" | "without-menu",
-  promptText: string,
-  previousDueData?: DueData,
-): CliComponent<"menu-requested" | PromptAnswer> {
-  const promptDefault = previousDueData
-    ? defaultAnswer(previousDueData)
-    : undefined
-  const userAnswer = yield* inputPrompt(promptText, promptDefault)
-
-  if (withMenu === "with-menu" && userAnswer === "m") {
-    return "menu-requested"
-  }
-
-  const nextDue = nextDueFromString(userAnswer)
-
-  if (!nextDue) {
-    return yield* promptCli(withMenu, promptText, previousDueData)
-  }
-
-  return {
-    userAnswer,
-    nextDue,
-  }
-}
-
-function defaultAnswer(previousDueData: DueData) {
-  // Currently only NDays is implemented
-  if (previousDueData.algorithm !== nDaysAlgorithm) {
-    throw new Error("Unknown due algorithm: " + previousDueData.algorithmData)
-  }
-
-  return previousDueData.algorithmData
-}
-
-function nextDueFromString(nextDueInNDays: string): LocalDate | undefined {
-  const nextDueInt = parseInt(nextDueInNDays, 10)
-  return isNaN(nextDueInt) ? undefined : new LocalDate().addDays(nextDueInt)
+  const nextShow = yield* duePrompt("without-menu", { previousDueData })
+  const { relativeTo } = args
+  return nDaysData({ nextShow, relativeTo })
 }
