@@ -12,7 +12,7 @@ export async function* editNote(): CliComponent {
   yield* plugin.editNote(note)
 }
 
-async function* findNote(): CliComponent<Note> {
+export async function* findNote(): CliComponent<Note> {
   const query = yield* inputPrompt("Note search")
   const results = await searchNotesUseCase(query)
 
