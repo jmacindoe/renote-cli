@@ -7,6 +7,7 @@ export type DbNote = Document & {
   type: string
   /// Any data specific to only this type of note
   typeData: string
+  deck: string
   createdAt: string
   /// Days since Jan 1 2000
   nextDue: number
@@ -30,6 +31,11 @@ export const NoteDb = mongoose.model<DbNote>(
     createdAt: {
       type: String,
       required: true,
+    },
+    deck: {
+      type: String,
+      // TODO: migrate and set true
+      required: false,
     },
     nextDue: {
       type: Number,
@@ -60,5 +66,6 @@ export function deserializeBaseNote(doc: DbNote): BaseNote {
       algorithm: doc.dueAlgorithm,
       algorithmData: doc.dueAlgorithmData,
     },
+    deck: doc.deck,
   }
 }

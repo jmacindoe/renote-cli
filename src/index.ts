@@ -4,6 +4,7 @@ import { mainMenu } from "./features/notes/menu"
 import { addNote } from "./features/notes/add"
 import { Errors } from "./error/Errors"
 import { startDocker } from "./db/Docker"
+import inquirer from "inquirer"
 
 export type RenoteCommand = "add" | "review"
 
@@ -15,6 +16,10 @@ async function main() {
 }
 
 async function init() {
+  inquirer.registerPrompt(
+    "autocomplete",
+    require("inquirer-autocomplete-prompt"),
+  )
   await startDocker("3696828e64d5")
   BackendDb.init("mongodb://localhost:27017/renote")
 }

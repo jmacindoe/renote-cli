@@ -9,10 +9,13 @@ import { expectList } from "../../cli/test/expectList"
 import { expectInput } from "../../cli/test/expectInput"
 import { expectPrint } from "../../cli/test/expectPrint"
 import { expectEditor } from "../../cli/test/expectEditor"
+import { expectConfirm } from "./InputTestDsl"
+import { expectAutocomplete } from "./InputTestDsl"
 import { AddNoteTestDsl } from "./AddNoteTestDsl"
 import { TestDslGiven } from "./TestDslGiven"
 import { anyFurtherInteraction } from "../../cli/test/anyFurtherInteraction"
 import { ReviewNoteTestDsl } from "./ReviewNoteTestDsl"
+import { SearchTestDsl } from "./SearchTestDsl"
 
 export const TestDsl = {
   given: TestDslGiven,
@@ -20,6 +23,7 @@ export const TestDsl = {
   expect: new TestDslPositiveExpect(),
 
   mainMenu: MainMenuTestDsl,
+  search: SearchTestDsl,
   addNote: AddNoteTestDsl,
   reviewNote: ReviewNoteTestDsl,
 
@@ -27,6 +31,8 @@ export const TestDsl = {
   expectPrint,
   expectList,
   expectEditor,
+  expectConfirm,
+  expectAutocomplete,
   anyFurtherInteraction,
 }
 

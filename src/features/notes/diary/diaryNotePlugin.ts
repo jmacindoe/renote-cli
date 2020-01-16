@@ -24,11 +24,12 @@ export const diaryNotePlugin = {
   },
   deserialize(doc: DbNote): DiaryNote {
     assert(doc.type === diaryNoteType)
-    const { _id, createdAt, due } = deserializeBaseNote(doc)
+    const { _id, createdAt, due, deck } = deserializeBaseNote(doc)
     const { prompt } = decodeOrThrow(DiaryNoteTypeData, doc.typeData)
     return {
       type: diaryNoteType,
       _id,
+      deck,
       prompt,
       createdAt,
       due,

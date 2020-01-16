@@ -62,3 +62,33 @@ export async function* listPromptKV<T>(
     choices,
   })
 }
+
+export async function* confirmPrompt(
+  message: string,
+  prefill?: boolean,
+): CliComponent<boolean> {
+  return yield* prompt({
+    type: "confirm",
+    name: "result",
+    default: prefill,
+    message,
+  })
+}
+
+export async function* autocompletePrompt(
+  message: string,
+  source: (answersSoFar: any, input: string | undefined) => Promise<string[]>,
+  args?: {
+    /// User can input something not in the list. Defaults to false.
+    suggestOnly: boolean
+  }
+): CliComponent<string> {
+  return yield* prompt({
+    // @ts-ignore: type is part of inquirer-autocomplete-prompt extension
+    type: "autocomplete",
+    name: "result",
+    source,
+    message,
+    suggestOnly: args?.suggestOnly ?? false,
+  })
+}

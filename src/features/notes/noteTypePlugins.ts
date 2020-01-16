@@ -13,11 +13,17 @@ class NotePlugins {
   }
 
   public getByType(type: string): NoteTypePlugin {
-    return assertDefined(this.plugins.find(p => p.type === type))
+    return assertDefined(
+      this.plugins.find(p => p.type === type),
+      "No plugin for " + type,
+    )
   }
 
   public getByUiName(uiName: string): NoteTypePlugin {
-    return assertDefined(this.plugins.find(p => p.uiName === uiName))
+    return assertDefined(
+      this.plugins.find(p => p.uiName === uiName),
+      "No plugin for " + uiName,
+    )
   }
 
   public deserialize(doc: DbNote): Note {

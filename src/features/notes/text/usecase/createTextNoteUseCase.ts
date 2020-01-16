@@ -5,9 +5,10 @@ import { textNotePlugin } from "../textNotePlugin"
 
 export async function createTextNoteUseCase(
   body: string,
+  deck: string,
   due: DueData,
 ): Promise<void> {
   const typeData = textNotePlugin.serializeTypeData(body)
   const searchText = textNotePlugin.searchText(body)
-  return createNoteUseCase(textNoteType, typeData, searchText, due)
+  return createNoteUseCase(textNoteType, typeData, deck, searchText, due)
 }

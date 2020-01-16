@@ -30,9 +30,9 @@ describe("review", () => {
   })
 
   it("reviews the due notes", async () => {
-    await TestDsl.given.aTextNote("due in 1", 1)
-    await TestDsl.given.aTextNote("due in 2", 2)
-    await TestDsl.given.aTextNote("due in 3", 3)
+    await TestDsl.given.aTextNote("due in 1", 1, "deck1")
+    await TestDsl.given.aTextNote("due in 2", 2, "deck2")
+    await TestDsl.given.aTextNote("due in 3", 3, "deck3")
 
     MockTime.tickDays(2)
 

@@ -8,10 +8,13 @@ import {
   editorPrompt,
   listPrompt,
   listPromptKV,
+  autocompletePrompt,
+  confirmPrompt,
 } from "../model/CliPrompt"
 import { expectInput } from "./expectInput"
 import { expectEditor } from "./expectEditor"
 import { expectList } from "./expectList"
+import { expectAutocomplete, expectConfirm } from "../../test/dsl/InputTestDsl"
 
 describe("testCliInterpreter", () => {
   it("returns the sut's return value", async () => {
@@ -273,5 +276,130 @@ describe("testCliInterpreter", () => {
             Actual: {"type":"print","text":"Hi"}
             Expected: {"type":"prompt","kind":"input","question":"Hi","response":"ans"}]
           `)
+  })
+
+  describe("autocomplete", () => {
+    it("returns the response", async () => {
+      const sut: () => CliComponent = async function*() {
+        const answer = yield* autocompletePrompt("Q", async () => ["option1"])
+        yield* print(answer)
+      }
+      await testCliInterpreter(sut(), [
+        expectAutocomplete("Q", "option1"),
+        expectPrint("option1"),
+      ])
+    })
+
+    it("fails if suggestOnly or message doesn't match", async () => {
+      const sut: () => CliComponent = async function*() {
+        yield* autocompletePrompt("Q", async () => ["option1"])
+      }
+      const promise = testCliInterpreter(sut(), [
+        expectAutocomplete("message", "ans", { suggestOnly: true }),
+      ])
+      await expect(promise).rejects.toMatchInlineSnapshot(`
+              [Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
+
+              [32m- Expected[39m
+              [31m+ Received[39m
+
+              [2m  Array [[22m
+              [2m    "autocomplete",[22m
+              [32m-   "message",[39m
+              [32m-   true,[39m
+              [31m+   "Q",[39m
+              [31m+   false,[39m
+              [2m    "ans",[22m
+              [2m  ][22m]
+            `)
+    })
+
+    it("fails if responseMustAlreadyExist but response not in options", async () => {
+      const sut: () => CliComponent = async function*() {
+        yield* autocompletePrompt("Q", async () => ["option1"])
+      }
+      const promise = testCliInterpreter(sut(), [
+        expectAutocomplete("Q", "ans", {
+          responseMustAlreadyExist: true,
+        }),
+      ])
+      await expect(promise).rejects.toMatchInlineSnapshot(`
+              [Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+              Expected value: [32m"ans"[39m
+              Received array: [31m["option1"][39m]
+            `)
+    })
+
+    it("fails if expectedAutocompletions don't match", async () => {
+      const sut: () => CliComponent = async function*() {
+        yield* autocompletePrompt("Q", async () => ["option1"])
+      }
+      const promise = testCliInterpreter(sut(), [
+        expectAutocomplete("Q", "option1", {
+          expectedAutocompletions: { foo: ["not there"] },
+        }),
+      ])
+      await expect(promise).rejects.toMatchInlineSnapshot(`
+              [Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
+
+              [32m- Expected[39m
+              [31m+ Received[39m
+
+              [2m  Array [[22m
+              [32m-   "not there",[39m
+              [31m+   "option1",[39m
+              [2m  ][22m]
+            `)
+    })
+  })
+
+  describe("confirm", () => {
+    it("returns the response", async () => {
+      const sut: () => CliComponent = async function*() {
+        const answer = yield* confirmPrompt("Q")
+        yield* print(JSON.stringify(answer))
+      }
+      await testCliInterpreter(sut(), [
+        expectConfirm("Q", true),
+        expectPrint("true"),
+      ])
+    })
+
+    it("fails if the message doesn't match", async () => {
+      const sut: () => CliComponent = async function*() {
+        yield* confirmPrompt("Q")
+      }
+      const promise = testCliInterpreter(sut(), [
+        expectConfirm("message", true),
+      ])
+      await expect(promise).rejects.toMatchInlineSnapshot(`
+              [Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
+
+              [32m- Expected[39m
+              [31m+ Received[39m
+
+              [2m  Array [[22m
+              [2m    "confirm",[22m
+              [32m-   "message",[39m
+              [31m+   "Q",[39m
+              [2m  ][22m]
+            `)
+    })
+
+    it("fails if the prefill default doesn't match", async () => {
+      const sut: () => CliComponent = async function*() {
+        yield* confirmPrompt("Q")
+      }
+      const promise = testCliInterpreter(sut(), [
+        expectConfirm("Q", true, { default: false }),
+      ])
+      await expect(promise).rejects.toMatchInlineSnapshot(`
+              [Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
+
+              Expected: [32mfalse[39m
+              Received: [31mundefined[39m]
+            `)
+    })
   })
 })

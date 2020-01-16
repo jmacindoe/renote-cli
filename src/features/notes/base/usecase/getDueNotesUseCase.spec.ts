@@ -21,12 +21,12 @@ afterEach(async () => {
 describe("getDueNotesUseCase", () => {
   it("gets due notes", async () => {
     const today = new LocalDate(1000)
-    await createTextNoteUseCase("body", {
+    await createTextNoteUseCase("body", "deck", {
       nextDue: new LocalDate(1000),
       algorithm: "alg",
       algorithmData: "whatever",
     })
-    await createDiaryNoteUseCase("prompt", {
+    await createDiaryNoteUseCase("prompt", "deck", {
       nextDue: new LocalDate(999),
       algorithm: "alg",
       algorithmData: "something",
@@ -44,6 +44,7 @@ describe("getDueNotesUseCase", () => {
         "_id": Anything,
         "body": "body",
         "createdAt": Any<Date>,
+        "deck": "deck",
         "due": Object {
           "algorithm": "alg",
           "algorithmData": "whatever",
@@ -61,6 +62,7 @@ describe("getDueNotesUseCase", () => {
       Object {
         "_id": Anything,
         "createdAt": Any<Date>,
+        "deck": "deck",
         "due": Object {
           "algorithm": "alg",
           "algorithmData": "something",
@@ -77,7 +79,7 @@ describe("getDueNotesUseCase", () => {
 
   it("doesn't get notes not yet due", async () => {
     const today = new LocalDate(1000)
-    await createTextNoteUseCase("body", {
+    await createTextNoteUseCase("body", "deck", {
       nextDue: new LocalDate(1001),
       algorithm: "alg",
       algorithmData: "whatever",
