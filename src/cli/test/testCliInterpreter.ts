@@ -3,7 +3,6 @@ import { assertDefined } from "../../error/assert"
 import { CliComponent } from "../model/CliComponent"
 import { ExhaustiveSwitchError } from "../../error/ExhaustiveSwitchError"
 import { NameValue } from "../model/CliPrompt"
-import { option } from "fp-ts/lib/Option"
 import {
   checkAutocompleteInteraction,
   AutocompleteQuestion,
@@ -40,6 +39,7 @@ export interface TestCliList {
   kind: "list"
   choice: string
   options: string[] | null
+  message: string
 }
 
 export interface TestCliConfirm {
@@ -126,15 +126,22 @@ async function checkQuestion(
 ): Promise<any> {
   switch (expected.kind) {
     case "input":
-      expect(question.type).toEqual("input")
-      expect(question.message).toEqual(expected.question)
+      expect([question.type, question.message]).toEqual([
+        "input",
+        expected.question,
+      ])
       return expected.response
     case "editor":
-      expect(question.type).toEqual("editor")
-      expect(question.message).toEqual(expected.question)
+      expect([question.type, question.message]).toEqual([
+        "editor",
+        expected.question,
+      ])
       return expected.response
     case "list":
-      expect(question.type).toEqual("list")
+      expect([question.type, question.message]).toEqual([
+        "list",
+        expected.message,
+      ])
       return checkListQuestion(question as ListQuestion, expected)
     case "confirm":
       checkConfirmQuestion(question, expected)

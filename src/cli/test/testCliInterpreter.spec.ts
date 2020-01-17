@@ -115,8 +115,14 @@ describe("testCliInterpreter", () => {
     await expect(promise).rejects.toMatchInlineSnapshot(`
             [Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
 
-            Expected: [32m"Q"[39m
-            Received: [31m"Q[7m:[27m"[39m]
+            [32m- Expected[39m
+            [31m+ Received[39m
+
+            [2m  Array [[22m
+            [2m    "input",[22m
+            [32m-   "Q",[39m
+            [31m+   "Q:",[39m
+            [2m  ][22m]
           `)
   })
 
@@ -139,8 +145,14 @@ describe("testCliInterpreter", () => {
     await expect(promise).rejects.toMatchInlineSnapshot(`
             [Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
 
-            Expected: [32m"Q"[39m
-            Received: [31m"Q[7m:[27m"[39m]
+            [32m- Expected[39m
+            [31m+ Received[39m
+
+            [2m  Array [[22m
+            [2m    "editor",[22m
+            [32m-   "Q",[39m
+            [31m+   "Q:",[39m
+            [2m  ][22m]
           `)
   })
 
@@ -261,8 +273,14 @@ describe("testCliInterpreter", () => {
     await expect(promise).rejects.toMatchInlineSnapshot(`
             [Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
 
-            Expected: [32m"input"[39m
-            Received: [31m"editor"[39m]
+            [32m- Expected[39m
+            [31m+ Received[39m
+
+            [2m  Array [[22m
+            [32m-   "input",[39m
+            [31m+   "editor",[39m
+            [2m    "Q",[22m
+            [2m  ][22m]
           `)
   })
 

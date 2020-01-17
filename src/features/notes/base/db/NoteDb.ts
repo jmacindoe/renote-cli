@@ -1,13 +1,15 @@
 import mongoose, { Document } from "mongoose"
+import { ObjectId } from "mongodb"
 import { BaseNote } from "../model/BaseNote"
 import { LocalDate } from "../model/LocalDate"
+import { Id } from "../../../../db/Id"
 
 export type DbNote = Document & {
   _id: any
   type: string
   /// Any data specific to only this type of note
   typeData: string
-  deck: string
+  deckId: Id
   createdAt: string
   /// Days since Jan 1 2000
   nextDue: number
@@ -32,10 +34,9 @@ export const NoteDb = mongoose.model<DbNote>(
       type: String,
       required: true,
     },
-    deck: {
-      type: String,
-      // TODO: migrate and set true
-      required: false,
+    deckId: {
+      type: ObjectId,
+      required: true,
     },
     nextDue: {
       type: Number,
@@ -66,6 +67,6 @@ export function deserializeBaseNote(doc: DbNote): BaseNote {
       algorithm: doc.dueAlgorithm,
       algorithmData: doc.dueAlgorithmData,
     },
-    deck: doc.deck,
+    deckId: doc.deckId,
   }
 }

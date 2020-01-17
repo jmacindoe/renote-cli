@@ -38,11 +38,13 @@ export async function* editorPrompt(
 }
 
 /// Returns `value` or the chosen string
-export async function* listPrompt(choices: string[]): CliComponent<string> {
+export async function* listPrompt(choices: string[], args: {
+  message: string
+} = { message: "Menu" }): CliComponent<string> {
   return yield* prompt({
     type: "list",
     name: "result",
-    message: "Menu",
+    message: args.message,
     choices,
   })
 }

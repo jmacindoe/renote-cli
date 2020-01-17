@@ -3,11 +3,17 @@ import { createTextNoteUseCase } from "../../text/usecase/createTextNoteUseCase"
 import { LocalDate } from "../model/LocalDate"
 import { createDiaryNoteUseCase } from "../../diary/usecase/createDiaryNoteUseCase"
 import { getDueNotesUseCase } from "./getDueNotesUseCase"
+import { MockTime } from "../../../../test/MockTime"
+import { TestDsl } from "../../../../test/dsl/TestDsl"
 
 const db = new TestBackendDb()
 
 beforeAll(async () => {
   await db.init()
+})
+
+beforeEach(() => {
+  MockTime.install()
 })
 
 afterAll(async () => {
@@ -16,25 +22,20 @@ afterAll(async () => {
 
 afterEach(async () => {
   await db.deleteAllData()
+  MockTime.reset()
 })
 
 describe("getDueNotesUseCase", () => {
   it("gets due notes", async () => {
-    const today = new LocalDate(1000)
-    await createTextNoteUseCase("body", "deck", {
-      nextDue: new LocalDate(1000),
-      algorithm: "alg",
-      algorithmData: "whatever",
-    })
-    await createDiaryNoteUseCase("prompt", "deck", {
-      nextDue: new LocalDate(999),
-      algorithm: "alg",
-      algorithmData: "something",
-    })
-    const notes = await getDueNotesUseCase(today)
+    await TestDsl.given.aTextNote("body", 0, "deck1")
+    await TestDsl.given.aDiaryNote("prompt", 1, "deck2")
+    MockTime.tickDays(1)
+
+    const notes = await getDueNotesUseCase(MockTime.today())
     expect(notes).toHaveLength(2)
     const customMatchers = {
       _id: expect.anything(),
+      deckId: expect.anything(),
       createdAt: expect.any(Date),
     }
     expect(notes[0]).toMatchInlineSnapshot(
@@ -43,13 +44,13 @@ describe("getDueNotesUseCase", () => {
       Object {
         "_id": Anything,
         "body": "body",
-        "createdAt": Any<Date>,
-        "deck": "deck",
+        "createdAt": Any<MockDate>,
+        "deckId": Anything,
         "due": Object {
-          "algorithm": "alg",
-          "algorithmData": "whatever",
+          "algorithm": "NDays",
+          "algorithmData": "0",
           "nextDue": LocalDate {
-            "daysSince2000": 1000,
+            "daysSince2000": 3000,
           },
         },
         "type": "TextNote",
@@ -61,13 +62,13 @@ describe("getDueNotesUseCase", () => {
       `
       Object {
         "_id": Anything,
-        "createdAt": Any<Date>,
-        "deck": "deck",
+        "createdAt": Any<MockDate>,
+        "deckId": Anything,
         "due": Object {
-          "algorithm": "alg",
-          "algorithmData": "something",
+          "algorithm": "NDays",
+          "algorithmData": "1",
           "nextDue": LocalDate {
-            "daysSince2000": 999,
+            "daysSince2000": 3001,
           },
         },
         "prompt": "prompt",
@@ -78,13 +79,9 @@ describe("getDueNotesUseCase", () => {
   })
 
   it("doesn't get notes not yet due", async () => {
-    const today = new LocalDate(1000)
-    await createTextNoteUseCase("body", "deck", {
-      nextDue: new LocalDate(1001),
-      algorithm: "alg",
-      algorithmData: "whatever",
-    })
-    const notes = await getDueNotesUseCase(today)
+    await TestDsl.given.aTextNote("body", 1, "deck1")
+
+    const notes = await getDueNotesUseCase(MockTime.today())
     expect(notes).toHaveLength(0)
   })
 })

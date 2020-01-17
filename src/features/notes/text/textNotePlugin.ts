@@ -24,12 +24,12 @@ export const textNotePlugin = {
   },
   deserialize(doc: DbNote): TextNote {
     assert(doc.type === textNoteType)
-    const { _id, createdAt, due, deck } = deserializeBaseNote(doc)
+    const { _id, createdAt, due, deckId } = deserializeBaseNote(doc)
     const { body } = decodeOrThrow(TextNoteTypeData, doc.typeData)
     return {
       type: textNoteType,
       _id,
-      deck,
+      deckId,
       body,
       createdAt,
       due,

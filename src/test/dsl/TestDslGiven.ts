@@ -38,6 +38,6 @@ function deckInteraction(
   deckAlreadyExists?: "deck-already-exists",
 ): TestCliInteraction[] {
   return deckAlreadyExists
-    ? [TestDsl.addNote.existingDeck(deck)]
-    : TestDsl.addNote.newDeck(deck)
+    ? [TestDsl.addNote.existingDeck(null, deck)]
+    : TestDsl.addNote.newDeck(null, deck)
 }

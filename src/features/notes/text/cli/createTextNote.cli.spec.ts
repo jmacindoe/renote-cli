@@ -33,7 +33,7 @@ describe("createTextNote.cli", () => {
 
     await testCliInterpreter(createTextNoteCli(), [
       expectEditor("Body", "The body"),
-      ...TestDsl.addNote.newDeck("deck"),
+      ...TestDsl.addNote.newDeck([], "deck"),
       TestDsl.addNote.showIn(nextDue),
     ])
 
@@ -42,7 +42,7 @@ describe("createTextNote.cli", () => {
     const doc = docs[0] as any
     expect(doc.type).toEqual("TextNote")
     expect(doc.typeData).toMatchInlineSnapshot(`"{\\"body\\":\\"The body\\"}"`)
-    expect(doc.deck).toEqual("deck")
+    expect(doc.deckId).toBeDefined()
     expect(doc.nextDue).toEqual(MockTime.initialMockedLocalDate + nextDue)
     expect(doc.createdAt).toEqual("2008-03-19T11:00:00+02:00")
   })

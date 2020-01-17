@@ -1,5 +1,6 @@
 import { NoteDb } from "../db/NoteDb"
 import { DueData } from "../model/DueData"
+import { Deck } from "../../../decks/model/Deck"
 
 export async function updateNoteUseCase(
   _id: any,
@@ -7,6 +8,7 @@ export async function updateNoteUseCase(
     typeData?: string
     searchText?: string
     due?: DueData
+    deck?: Deck
   },
 ): Promise<void> {
   const $set = {
@@ -25,6 +27,11 @@ export async function updateNoteUseCase(
           nextDue: update.due.nextDue.daysSince1Jan2000(),
           dueAlgorithm: update.due.algorithm,
           dueAlgorithmData: update.due.algorithmData,
+        }
+      : {}),
+    ...(update.deck
+      ? {
+          deckId: update.deck._id,
         }
       : {}),
   }

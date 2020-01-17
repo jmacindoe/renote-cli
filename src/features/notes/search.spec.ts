@@ -35,11 +35,7 @@ describe("search", () => {
 
     await TestDsl.interaction(
       TestDsl.mainMenu.search(),
-      TestDsl.search.deckFilter("deck1", {
-        expectedAutocompletions: {
-          deck: ["deck1", "deck2"],
-        },
-      }),
+      TestDsl.search.deckFilter(["deck1", "deck2"], "deck1"),
       TestDsl.expectInput("Query", "doc"),
       TestDsl.expectList(["doc 1"], "doc 1"),
       TestDsl.expectPrint("doc 1"),

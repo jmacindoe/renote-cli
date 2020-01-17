@@ -6,14 +6,10 @@ export const SearchTestDsl = {
     return TestDsl.expectConfirm("Filter by deck", false)
   },
 
-  deckFilter(deck: string,
-  args?: {
-    expectedAutocompletions: { [input: string]: string[] }
-  }
-    ): TestCliInteraction[] {
+  deckFilter(allDecks: string[], choice: string): TestCliInteraction[] {
     return [
       TestDsl.expectConfirm("Filter by deck", true),
-      TestDsl.expectAutocomplete("Deck", deck, { suggestOnly: false, responseMustAlreadyExist: true, expectedAutocompletions: args?.expectedAutocompletions }),
+      TestDsl.expectList(allDecks, choice, { message: "Deck" }),
     ]
   },
 }

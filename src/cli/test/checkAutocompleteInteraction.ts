@@ -9,7 +9,7 @@ export type AutocompleteQuestion = DistinctQuestion<any> & {
 export async function checkAutocompleteInteraction(
   question: AutocompleteQuestion,
   expected: TestCliAutocomplete,
-) {
+): Promise<any> {
   expect([
     question.type,
     question.message,
