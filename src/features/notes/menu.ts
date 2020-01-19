@@ -4,16 +4,9 @@ import { doReview } from "./review"
 import { addNote } from "./add"
 import { search } from "./search"
 import { editNote } from "./edit"
-import { rescheduleNote } from "./reschedule"
 
 export async function* mainMenu(): CliComponent {
-  const command = yield* listPrompt([
-    "Review",
-    "Add",
-    "Edit",
-    "Reschedule",
-    "Search",
-  ])
+  const command = yield* listPrompt(["Review", "Add", "Edit", "Search"])
   switch (command) {
     case "Review":
       yield* doReview()
@@ -23,9 +16,6 @@ export async function* mainMenu(): CliComponent {
       break
     case "Edit":
       yield* editNote()
-      break
-    case "Reschedule":
-      yield* rescheduleNote()
       break
     case "Search":
       yield* search()

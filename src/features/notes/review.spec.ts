@@ -73,6 +73,22 @@ describe("review", () => {
     await TestDsl.expect.not.textNoteExists("the note")
   })
 
+  it("changes a note's deck", async () => {
+    await TestDsl.given.aTextNote("the note", 0, "original deck")
+
+    await TestDsl.interaction(
+      TestDsl.mainMenu.review(),
+      TestDsl.reviewNote.dueToday(1),
+      TestDsl.expectPrint("the note"),
+      TestDsl.reviewNote.showIn({ previous: 0, new: "m" }),
+      TestDsl.reviewNote.menu.changeDeck(),
+      TestDsl.expectPrint("Current deck: original deck"),
+      TestDsl.deck.chooseToCreateNewDeck(["original deck"], "new-deck"),
+    )
+
+    await TestDsl.expect.textNoteIsInDeck("the note", "new-deck")
+  })
+
   it("allows a note to be edited", async () => {
     await TestDsl.given.aTextNote("the note", 0)
 

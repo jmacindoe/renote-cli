@@ -16,6 +16,8 @@ import { TestDslGiven } from "./TestDslGiven"
 import { anyFurtherInteraction } from "../../cli/test/anyFurtherInteraction"
 import { ReviewNoteTestDsl } from "./ReviewNoteTestDsl"
 import { SearchTestDsl } from "./SearchTestDsl"
+import { EditNoteTestDsl } from "./EditNoteTestDsl"
+import { DeckTestDsl } from "./DeckTestDsl"
 
 export const TestDsl = {
   given: TestDslGiven,
@@ -24,8 +26,10 @@ export const TestDsl = {
 
   mainMenu: MainMenuTestDsl,
   search: SearchTestDsl,
+  deck: DeckTestDsl,
   addNote: AddNoteTestDsl,
   reviewNote: ReviewNoteTestDsl,
+  editNote: EditNoteTestDsl,
 
   expectInput,
   expectPrint,

@@ -13,25 +13,6 @@ export const AddNoteTestDsl = {
     return TestDsl.expectList(noteTypeOptions, "Text")
   },
 
-  newDeck(allDecks: string[] | null, newDeck: string): TestCliInteraction[] {
-    const options =
-      allDecks === null ? null : [...allDecks, createNewDeckOption]
-    return [
-      TestDsl.expectList(options, createNewDeckOption, { message: "Deck" }),
-      TestDsl.expectInput("Deck name", newDeck),
-      TestDsl.expectConfirm(`Create new deck "${newDeck}"`, true),
-      TestDsl.expectPrint(`Created deck "${newDeck}"`),
-    ]
-  },
-
-  existingDeck(allDecks: string[] | null, choice: string): TestCliInteraction {
-    const options =
-      allDecks === null ? null : [...allDecks, createNewDeckOption]
-    return TestDsl.expectList(options, choice, {
-      message: "Deck",
-    })
-  },
-
   showIn(nDays: number): TestCliInteraction {
     return TestDsl.expectInput(
       "Show in how many days from now?",

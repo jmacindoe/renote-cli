@@ -27,7 +27,7 @@ describe("promptForDeck", () => {
     await TestDsl.given.aTextNote("note", 1, "the-deck")
 
     const actual = await testCliInterpreter(promptForDeck(), [
-      TestDsl.addNote.existingDeck(["the-deck"], "the-deck"),
+      TestDsl.deck.chooseExistingDeck(["the-deck"], "the-deck"),
     ])
     expect(actual.name).toEqual("the-deck")
   })
@@ -37,7 +37,7 @@ describe("promptForDeck", () => {
 
     const actual = await testCliInterpreter(
       promptForDeck(),
-      TestDsl.addNote.newDeck(["the-deck"], "new-deck"),
+      TestDsl.deck.chooseToCreateNewDeck(["the-deck"], "new-deck"),
     )
     expect(actual.name).toEqual("new-deck")
   })
@@ -54,7 +54,7 @@ describe("promptForDeck", () => {
       TestDsl.expectInput("Deck name", "new-deck"),
       TestDsl.expectConfirm(`Create new deck "new-deck"`, false),
       TestDsl.expectPrint(`Did not create deck`),
-      TestDsl.addNote.existingDeck(["the-deck"], "the-deck"),
+      TestDsl.deck.chooseExistingDeck(["the-deck"], "the-deck"),
     ])
     expect(actual.name).toEqual("the-deck")
   })

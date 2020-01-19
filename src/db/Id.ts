@@ -1,3 +1,3 @@
 import mongodb from "mongodb"
 
-export type Id = typeof mongodb.ObjectId
+export type Id = mongodb.ObjectId

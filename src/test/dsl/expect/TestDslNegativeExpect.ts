@@ -1,5 +1,6 @@
 import { TestDslExpect } from "./TestDslExpect"
 import { NoteDb } from "../../../features/notes/base/db/NoteDb"
+import { getTextNotes, getDiaryNotes } from "./TestDslPositiveExpect"
 
 export class TestDslNegativeExpect extends TestDslExpect {
   constructor() {
@@ -7,22 +8,12 @@ export class TestDslNegativeExpect extends TestDslExpect {
   }
 
   public async textNoteExists(body: string) {
-    const typeData = JSON.stringify({
-      body,
-    })
-    const docs = await NoteDb.find({
-      typeData,
-    }).exec()
-    expect(docs.length).toEqual(0)
+    const notes = await getTextNotes(body)
+    expect(notes).toHaveLength(0)
   }
 
   public async diaryNoteExists(prompt: string) {
-    const typeData = JSON.stringify({
-      prompt,
-    })
-    const docs = await NoteDb.find({
-      typeData,
-    }).exec()
-    expect(docs.length).toEqual(0)
+    const notes = await getDiaryNotes(prompt)
+    expect(notes).toHaveLength(0)
   }
 }

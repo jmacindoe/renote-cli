@@ -33,7 +33,7 @@ describe("createTextNote.cli", () => {
 
     await testCliInterpreter(createTextNoteCli(), [
       expectEditor("Body", "The body"),
-      ...TestDsl.addNote.newDeck([], "deck"),
+      ...TestDsl.deck.chooseToCreateNewDeck([], "deck"),
       TestDsl.addNote.showIn(nextDue),
     ])
 

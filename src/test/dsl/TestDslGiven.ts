@@ -1,5 +1,7 @@
 import { TestDsl } from "./TestDsl"
 import { TestCliInteraction } from "../../cli/test/testCliInterpreter"
+import { Deck } from "../../features/decks/model/Deck"
+import { createDeckUseCase } from "../../features/decks/usecase/createDeckUseCase"
 
 export const TestDslGiven = {
   async aTextNote(
@@ -31,6 +33,10 @@ export const TestDslGiven = {
       TestDsl.addNote.showIn(dueInNDays),
     )
   },
+
+  async aDeck(name: string): Promise<Deck> {
+    return await createDeckUseCase(name)
+  },
 }
 
 function deckInteraction(
@@ -38,6 +44,6 @@ function deckInteraction(
   deckAlreadyExists?: "deck-already-exists",
 ): TestCliInteraction[] {
   return deckAlreadyExists
-    ? [TestDsl.addNote.existingDeck(null, deck)]
-    : TestDsl.addNote.newDeck(null, deck)
+    ? [TestDsl.deck.chooseExistingDeck(null, deck)]
+    : TestDsl.deck.chooseToCreateNewDeck(null, deck)
 }
