@@ -84,6 +84,7 @@ describe("review", () => {
       TestDsl.reviewNote.menu.changeDeck(),
       TestDsl.expectPrint("Current deck: original deck"),
       TestDsl.deck.chooseToCreateNewDeck(["original deck"], "new-deck"),
+      TestDsl.reviewNote.showIn({ previous: 0, new: 1 }),
     )
 
     await TestDsl.expect.textNoteIsInDeck("the note", "new-deck")
@@ -99,6 +100,7 @@ describe("review", () => {
       TestDsl.reviewNote.showIn({ previous: 0, new: "m" }),
       TestDsl.reviewNote.menu.info(),
       TestDsl.expectPrint("Deck: the-deck"),
+      TestDsl.reviewNote.showIn({ previous: 0, new: 1 }),
     )
   })
 

@@ -61,13 +61,16 @@ async function* menu(note: Note): CliComponent {
   } else if (op === "Edit") {
     const plugin = noteTypePlugins.getByType(note.type)
     yield* plugin.editNote(note)
-    yield* nextDuePrompt(note)
   } else if (op === "Reschedule") {
     const nextDue = yield* promptForRescheduledDueData(note.due)
     await updateDueDateUseCase(note._id, nextDue)
+    return
   } else if (op === "Change deck") {
     yield* editDeck(note)
   } else if (op === "Delete") {
     await deleteNoteUseCase(note._id)
+    return
   }
+
+  yield* nextDuePrompt(note)
 }
