@@ -89,6 +89,19 @@ describe("review", () => {
     await TestDsl.expect.textNoteIsInDeck("the note", "new-deck")
   })
 
+  it("prints info about a note", async () => {
+    await TestDsl.given.aTextNote("the note", 0, "the-deck")
+
+    await TestDsl.interaction(
+      TestDsl.mainMenu.review(),
+      TestDsl.reviewNote.dueToday(1),
+      TestDsl.expectPrint("the note"),
+      TestDsl.reviewNote.showIn({ previous: 0, new: "m" }),
+      TestDsl.reviewNote.menu.info(),
+      TestDsl.expectPrint("Deck: the-deck"),
+    )
+  })
+
   it("allows a note to be edited", async () => {
     await TestDsl.given.aTextNote("the note", 0)
 

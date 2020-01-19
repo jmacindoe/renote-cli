@@ -11,6 +11,7 @@ import shuffle from "knuth-shuffle-seeded"
 import { listPrompt } from "../../cli/model/CliPrompt"
 import { deleteNoteUseCase } from "./base/usecase/deleteNoteUseCase"
 import { editDeck } from "../decks/cli/editDeck.cli"
+import { getDeckUseCase } from "../decks/usecase/getDeckUseCase"
 
 export async function* doReview(): CliComponent {
   const notes = await getDueNotesUseCase()
@@ -46,9 +47,18 @@ async function* nextDuePrompt(note: Note): CliComponent {
 }
 
 async function* menu(note: Note): CliComponent {
-  const op = yield* listPrompt(["Edit", "Reschedule", "Change deck", "Delete"])
+  const op = yield* listPrompt([
+    "Info",
+    "Edit",
+    "Reschedule",
+    "Change deck",
+    "Delete",
+  ])
 
-  if (op === "Edit") {
+  if (op === "Info") {
+    const currentDeck = await getDeckUseCase(note.deckId)
+    yield* print("Deck: " + currentDeck.name)
+  } else if (op === "Edit") {
     const plugin = noteTypePlugins.getByType(note.type)
     yield* plugin.editNote(note)
     yield* nextDuePrompt(note)

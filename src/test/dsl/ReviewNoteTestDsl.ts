@@ -1,7 +1,7 @@
 import { TestDsl } from "./TestDsl"
 import { TestCliInteraction } from "../../cli/test/testCliInterpreter"
 
-const menuOptions = ["Edit", "Reschedule", "Change deck", "Delete"]
+const menuOptions = ["Info", "Edit", "Reschedule", "Change deck", "Delete"]
 
 const relativeToDueDate = "Schedule relative to due date"
 const relativeToToday = "Schedule relative to today"
@@ -35,6 +35,10 @@ export const ReviewNoteTestDsl = {
   },
 
   menu: {
+    info(): TestCliInteraction {
+      return TestDsl.expectList(menuOptions, "Info")
+    },
+
     edit(): TestCliInteraction {
       return TestDsl.expectList(menuOptions, "Edit")
     },
