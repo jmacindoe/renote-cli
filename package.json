@@ -26,22 +26,22 @@
     "io-ts": "^2.0.2",
     "knuth-shuffle-seeded": "^1.0.6",
     "moment": "^2.24.0",
-    "mongoose": "^5.7.1",
+    "mongoose": "^5.9.7",
     "yargs": "^14.0.0"
   },
   "devDependencies": {
     "@types/dockerode": "^2.5.21",
     "@types/inquirer": "^6.5.0",
     "@types/jest": "^24.0.18",
-    "@types/mongoose": "^5.5.17",
+    "@types/mongoose": "^5.7.8",
     "@types/node": "^12.7.5",
     "husky": "^3.0.9",
     "jest": "^24.9.0",
     "mockdate": "^2.0.5",
-    "mongodb-memory-server": "^6.0.1",
+    "mongodb-memory-server": "^6.5.0",
     "prettier": "^1.18.2",
     "ts-jest": "^24.1.0",
-    "tslint": "^5.20.0",
+    "tslint": "^6.1.0",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.7.4"
   }
