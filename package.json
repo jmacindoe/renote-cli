@@ -25,7 +25,7 @@
     "inquirer-autocomplete-prompt": "^1.0.1",
     "io-ts": "^2.0.2",
     "knuth-shuffle-seeded": "^1.0.6",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "mongoose": "^5.9.7",
     "yargs": "^14.0.0"
   },
